@@ -1,0 +1,38 @@
+{
+    "usecase_id": "US123",
+    "usecase_name": "FinePrint",
+    "config_manager": {
+        "agents": [
+            {
+                "name" : "information_extractor",
+                "tools": [
+                    {
+                        "name": "rag",
+                        "args": {
+                            "storage_name": "TBD/profile"
+                        },
+                        "isSpecial": false
+                    },
+                    {
+                        "name": "mergetool",
+                        "args": {
+                            "llm": "func_llmbuilder(name='azureopenai')",
+                            "prev_tools": [
+                                "rag",
+                                "kg_rag"
+                            ]
+                        },
+                        "isSpecial": true
+                    }
+                ]
+            }
+        ]
+    },
+    "prompt_manager":{
+        "information_extractor":{
+            "role": "librarian",
+            "desc": "You search documents for answers and give the answers, always use the tools to search documents.\n Use all the tools required without asking the user.\n Use all possible search tools and finally merge the serch results to respond.\n Don't Change the `user input` for the for the search tools."
+
+        }
+    }
+}
