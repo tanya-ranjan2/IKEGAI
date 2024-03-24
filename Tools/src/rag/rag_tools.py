@@ -6,21 +6,11 @@ from langchain_openai.chat_models import AzureChatOpenAI
 from Tools.src import tool_utils
 from Tools.schema.rag_schema import MergeTool,KGTool,RagTool
 from Tools.src.rag import rag_utils
+from utils.llmops import llmbuilder
 
-API_KEY="312ff50d6d954023b8748232617327b6"
 
 # --------------TBD -----------------------
-def llmbuilder(name):
-    if name =="azureopenai":
-        return AzureChatOpenAI(api_key=API_KEY,
-                    azure_endpoint="https://openai-lh.openai.azure.com/",
-                    openai_api_version="2024-02-15-preview",
-                    azure_deployment="test",
-                    #azure_deployment="gpt-35-turbo-0613",
-                    temperature=0
-                   )
-    else:
-        return None
+
     
     
 def chatmodel(qs,context,llm):
