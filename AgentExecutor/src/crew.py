@@ -8,7 +8,18 @@ from langchain_core.messages import HumanMessage,AIMessage,SystemMessage,Functio
 import json
 
 class Crew:
-    def __init__(self,agents:list,llm,verbose=True):
+    def __init__(self,agents:list,llm,name:str=None,verbose=True):
+        """Create a System of Agents that can autonomously work and solve problems
+
+        Args:
+            name (str): Name of the Crew
+            agents (list): List agents
+            llm (_type_): LLM 
+            verbose (bool, optional): _description_. Defaults to True.
+
+        
+        """
+        self.name="" if name is None else name
         self.agents=agents
         self.llm=llm
         self.verbose=verbose

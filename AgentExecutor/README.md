@@ -115,3 +115,19 @@ function_config={
 }
 def dummy(query,intermediatory_steps:dict)
 ```
+
+
+## Multi-Agent
+
+```python
+from AgentExecutor.src import agents,crew
+agent_list=[agent_1,agent_2]
+crew_of_agents=crew.Crew(
+    name="Crew Name"
+    agents=agent_list,
+    llm=llm
+)
+
+print(crew_of_agents.run("who is indresh"))
+```
+

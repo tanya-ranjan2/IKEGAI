@@ -33,6 +33,9 @@ def dummy(query:str)->list:
 **Note** : 
 - all tools should have decorator `@tool` with `args_schema` parameter
 - all tools should have a `doctring` which describes the function and it should be in `""" doctring """`
+- for a tool which has arguments as options like "azureopenai" and "hugginface " use `Literal['azureopenai','hugginface']` in the schema defination
+  - example : `llm: Literal['azureopenai','hugginface'] = Field(description="description")`
+- 
 
 #### For cases where you have to execute dynamic functions (ex: `func_llmbuilder('azureopenai')`)
 if your tool is using a where you need to execute a dynamic function from user include the following in your tool
@@ -74,4 +77,18 @@ def mergetool(query:str,llm:str=None)->str:
     out=chatmodel(query,llm_func)
     return out.content
     
+```
+
+
+## `Important`
+
+Once the tool in created:
+- Add the tool info to AgentExecutor.utils.helper
+
+```python
+#IMPORT ALL TOOLS HERE
+from Tools.src.rag.rag_tools import rag,kg_rag,mergetool
+from Tools.src.structured_tools.sql_tools import sql_generator,sql_executor
+
+
 ```

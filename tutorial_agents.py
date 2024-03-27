@@ -3,9 +3,11 @@ import json
 
 
 #local imports
-from AgentExectutor.src import agents
+from AgentExecutor.src import agents
 from Tools.src.rag import rag_utils
 from Tools.src.rag.rag_tools import rag,kg_rag,mergetool
+from _temp.config import OpenAIConfig
+from dataclasses import asdict
 from utils import parser
 function_config={
     "rag":{
@@ -26,20 +28,14 @@ config_data=json.load(open('_temp/configManager.json'))
 agent_details=parser.get_agent_details(config_data)
 
 API_KEY="312ff50d6d954023b8748232617327b6"
-llm=AzureChatOpenAI(api_key=API_KEY,
-                    azure_endpoint="https://openai-lh.openai.azure.com/",
-                    openai_api_version="2024-02-15-preview",
-                    azure_deployment="test",
-                    #azure_deployment="gpt-35-turbo-0613",
-                    temperature=0
-                   )
+llm=AzureChatOpenAI(**asdict(OpenAIConfig()))
 
 
 rag_agent= agents.Agent(
     role=agent_details[0]['role'],
     desc=agent_details[0]['desc'],
     llm=llm,
-    tools=[rag,kg_rag,mergetool],
+    tools=[eval(t) for t in agent_details[0]['tools']],
     config=agent_details[0]['func_config'],
     verbose=True
 )

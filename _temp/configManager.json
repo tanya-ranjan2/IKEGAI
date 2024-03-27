@@ -15,6 +15,11 @@
                         "isSpecial": false
                     },
                     {
+                        "name":"kg_rag",
+                        "args": {},
+                        "isSpecial": false
+                    },
+                    {
                         "name": "mergetool",
                         "args": {
                             "llm": "func_llmbuilder(name='azureopenai')",
@@ -26,6 +31,31 @@
                         "isSpecial": true
                     }
                 ]
+            },
+            {
+                "name" : "text2sql",
+                "tools": [
+                    {
+                        "name": "sql_generator",
+                        "args": {
+                            "storage_name": "TBD/profile"
+                        },
+                        "isSpecial": false
+                    },
+                    {
+                        "name":"sql_executor",
+                        "args": {
+                            "creds":{
+                                "username":"",
+                                "password":"",
+                                "port":"",
+                                "db":""
+                            }
+                        },
+                        "isSpecial": false
+                    }
+                    
+                ]
             }
         ]
     },
@@ -33,6 +63,11 @@
         "information_extractor":{
             "role": "librarian",
             "desc": "You search documents for answers and give the answers, always use the tools to search documents.\n Use all the tools required without asking the user.\n Use all possible search tools and finally merge the serch results to respond.\n Don't Change the `user input` for the for the search tools.",
+            "tools":[]
+        },
+        "text2sql":{
+            "role": "Database Administrator",
+            "desc": "Your job is to generate and execute SQL queries from the `user query` which is in natural language.\n  Use all the tools required without asking the user.\n",
             "tools":[]
         }
     }

@@ -20,10 +20,13 @@ def get_agent_details(json_data:dict)->dict:
             "name":name,
             "role":prompt_manager[name]['role'],
             "desc":prompt_manager[name]['desc'],
-            "func_config":func_config
+            "func_config":func_config,
+            "tools":get_tools(agent['tools'])
         })
     return agent_details
-        
+def get_tools(tool_data:dict) ->list:   
+    
+    return [tool['name'] for tool in tool_data]
 
 def convert_to_func_config(tool_data:dict)->dict:
     """Convert tools details into Agent usable format

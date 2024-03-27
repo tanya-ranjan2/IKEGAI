@@ -1,8 +1,10 @@
 from langchain.pydantic_v1 import BaseModel, Field
+from typing import Literal
 
 class MergeTool(BaseModel):
     query: str = Field(description="original `user input`")
-    llm: str = Field(description="LLM function to be called")
+    #llm: Literal['azureopenai','hugginface'] = Field(description="LLM function to be called")
+    llm:str = Field(description="LLM function to be called")
     prev_tools: list= Field(description="List of previous tools")
     intermediatory_steps: dict= Field(description="All previous steps taken by other tools")
         
