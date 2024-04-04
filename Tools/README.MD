@@ -63,7 +63,6 @@ function_config={
             "llm": "func_llmbuilder(name='azureopenai')",
             
         },
-        "isSpecial":True
     },
 }
 @tool
@@ -84,7 +83,7 @@ def mergetool(query:str,llm:str=None)->str:
 
 Once the tool in created:
 - Add the tool info to AgentExecutor.utils.helper
-
+- Every tool should have a argument called `query` , this is the original user query
 ```python
 #IMPORT ALL TOOLS HERE
 from Tools.src.rag.rag_tools import rag,kg_rag,mergetool
@@ -92,3 +91,34 @@ from Tools.src.structured_tools.sql_tools import sql_generator,sql_executor
 
 
 ```
+
+
+Every tool has access to `state` variable that can store information that would not be passed to the LLM
+
+# StateFull Tools
+
+```python
+class RagTool(BaseModel, extra=Extra.allow):
+    query: str = Field(description="original `user input`")
+    storage_name: str = Field(description="Name of the vector database to be Searched")
+
+
+@tool(return_direct=False,args_schema=RagTool)
+def rag(query:str,storage_name:str,**kwargs)->list:
+    """Returns results from searching documents in vector database"""
+    agent_state=kwargs['state']
+    
+    embeddings=rag_utils.load_embeddings()
+    db=rag_utils.load_vectordb(storage_name,embeddings)
+    
+    documents=db.invoke(query)
+    reference=[i.metadata for i in documents]
+    agent_state.state['rag']=reference
+    return rag_utils.make_context(documents)
+```
+
+### For StateFull Tools the ToolSchema should have 
+- `extra=Extra.allow` as a intehited variable
+- the tool defination should have `**kwargs`
+- you can access the state using `kwargs['state']`
+- <b>Remember:</b> this state will be accessable to all the tools and agents

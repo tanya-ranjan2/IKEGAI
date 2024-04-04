@@ -25,8 +25,8 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
     agent_details=parser.get_agent_details(config_data)
     #<CODEBLOCk>
     rag_agent=helper.create_agents(config_data)[0]
-    out=rag_agent._execute_agent(agent_info.query)
-    return {"output":out}
+    out,metadata=rag_agent._execute_agent(agent_info.query)
+    return {"output":out,"metadata":metadata}
 
 
 @router.post("/excute/")
@@ -38,8 +38,8 @@ def execute(agent_info:agent_schema.AgentExecute):
      #<CODEBLOCk>
     agents_all=helper.create_agents(config_data)
     agent_crew=crew.Crew(agents=agents_all,llm=llm,)
-    out=agent_crew.run(agent_info.query)
-    return {"output":out}
+    out,metadata=agent_crew.run(agent_info.query)
+    return {"output":out,"metadata":metadata}
 '''
 @router.post("/execute/{uid}")
 def execute_uid(uid):

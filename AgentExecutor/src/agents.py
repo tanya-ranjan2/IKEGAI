@@ -3,22 +3,15 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.memory import ChatMessageHistory
 from langchain_core.messages import HumanMessage,AIMessage,SystemMessage,FunctionMessage,ToolMessage
 import json
+from dataclasses import dataclass
 
-
-
-#isSpecial tool= tool that has access to intermediate steps, A special tool will have **kwargs initiated
-#obsersation : if argtype ==str it works else if list doesnot work
-
-##Todo:
-#if seq flag is off and multiple tools have been used --> use merge and comment | Same for agents
-#forcefully put original query to each tool if 'parallel run'
-
-
-
+@dataclass
+class StateDict:
+    state={}
 
 
 class Agent:
-    def __init__(self,role:str,desc:str,tools:list,llm,config:dict={},verbose:bool=False,execution_type:str="seq") -> None:
+    def __init__(self,role:str,desc:str,tools:list,llm,instruct_promt=None,output_prompt=None,config:dict={},verbose:bool=False,execution_type:str="seq") -> None:
         """_summary_
 
         Args:
@@ -32,6 +25,10 @@ class Agent:
         """
         self.role=role
         self.verbose=verbose
+        
+        self.instruct_promt=instruct_promt
+        self.output_prompt=output_prompt
+        
         self.desc=desc
         self.tools=tools
         self.llm=llm
@@ -44,17 +41,23 @@ class Agent:
         self.system_prompt=self._init_system_prompt_(role,desc)
         self.prompt=self._create_prompt_history_(self.system_prompt)
         self.chat_history = ChatMessageHistory()
-        
+        #comment Chain
+        self.local_chat_history=self._set_local_history_()
+        self.comment_prompt=self.__init__local_chat(self.instruct_promt,self.output_prompt)
+        self.comment_chain=self.prompt | self.llm
         #create LLM chain 
         self.chain = self.prompt | self.llm.bind(functions=self.functions)
         self.intermediatory_steps={}
         self.config=config
-        self.agent_state={}
+        self.state_dict=StateDict()
         
         
+    def _set_local_history_(self):
+        return ChatMessageHistory()
     def dummy(self,query):
         return query
-    
+    def comment_tool(self):
+        pass
     def _init_system_prompt_(self,role:str,desc:str)->str:
         """Initialize the Prompt
 
@@ -75,6 +78,27 @@ class Agent:
         Your user facing job is: {desc}
         '''
         return prompt.format(role=role,desc=desc)
+    
+    
+    def __init__local_chat(self,instruct_promt,output_prompt):
+        prompt=f'''Summarize the following conversation between a service rep and a customer in a few sentences. Use only the information from the conversation.
+        '''
+        if instruct_promt:
+            prompt+=f"\n Here is the Instruction for your Job: {instruct_promt}"
+        if output_prompt:
+            prompt+=f"\n Note:{output_prompt}"
+        print(prompt)
+        chat_prompt=ChatPromptTemplate.from_messages(
+            [
+                (
+                    "system",
+                    prompt,
+                ),
+                MessagesPlaceholder(variable_name="messages"),
+            ]
+        )
+        return chat_prompt
+    
     def _create_prompt_history_(self,system_prompt:str):
         """Create a conversational Prompt History
 
@@ -94,7 +118,7 @@ class Agent:
             ]
         )
         return chat_prompt
-    def _invoke_agent_(self):
+    def _invoke_agent_(self,chat_history):
         """ Call the LLM model with conversation history
 
         Returns:
@@ -102,7 +126,7 @@ class Agent:
         """
         out=self.chain.invoke(
                 {
-                    "messages": self.chat_history.messages,
+                    "messages": chat_history.messages,
                 }
             )
         return out
@@ -120,47 +144,73 @@ class Agent:
         
         tool=function_info["name"]
         tool_input=json.loads(function_info["arguments"])
-        #print(tool_input)
+        if self.execution_type=="parallel":
+            if 'query' in tool_input:
+                tool_input['query']=self.state_dict.state['input']
+        #print(f"===TOOL INPUT===={tool_input}=========")
         if tool in self.config:
             tool_input.update(self.config[tool]["default_args"])
-            if self.config[tool]["isSpecial"]:
-                tool_input["intermediatory_steps"]=self.intermediatory_steps
-                
-    
-        tool_output=self.tools_action[tool].invoke(tool_input)
         
+        ## For Community Tools 
+        if '__arg1' in tool_input:
+            tool_input['query'] = tool_input.pop('__arg1')
+        else:
+            tool_input['state']=self.state_dict
+        
+        tool_output =self.tools_action[tool].invoke(tool_input)
+        #print(f"===TOOL OUTPUT===={tool_output}=========")
         return tool,tool_output
     
     def _execute_agent(self,query):
+        self._set_local_history_()
         if len(self.tools)==0:
             raise Exception("No tools were added to the the Agent!! Please add tools to continue")
         # For Parallel and Sequencial Runs
-        self.agent_state['input']=query
+        self.state_dict.state['input']=query
         # For Parallel and Sequencial Runs
         
         
-        self.chat_history.add_user_message(query)
-        out=self._invoke_agent_()
-        self.chat_history.add_message(out)
         
-        last_stable_output=out.content
+        self.chat_history.add_user_message(query)
+        self.local_chat_history.add_user_message(query)
+        
+        out=self._invoke_agent_(self.chat_history)
+        
+        self.chat_history.add_message(out)
+        self.local_chat_history.add_message(out)
+        
+        #last_stable_output=out.content
         while "function_call" in out.additional_kwargs:
             if "function_call" in out.additional_kwargs:
                 if self.verbose:
                     print("tool_call:",out.additional_kwargs)
                 tool_name,tool_output=self._run_tool(out.additional_kwargs["function_call"])
                 func_msg=FunctionMessage(name=tool_name,content=tool_output)
+                
                 self.chat_history.add_message(func_msg)
+                self.local_chat_history.add_message(func_msg)
+                
                 self.intermediatory_steps[tool_name]=tool_output
-                last_stable_output=tool_output
+                #last_stable_output=tool_output
             #check if more info is required
             self.chat_history.add_user_message("Is there any other tool that can be used for the task? Answer only in 'yes' or 'no'")
-            out=self._invoke_agent_()
+            out=self._invoke_agent_(self.chat_history)
             self.chat_history.add_message(out)
             #print(out)
             if out.content.lower() =="yes":
-                out=self._invoke_agent_()
+                out=self._invoke_agent_(self.chat_history)
+                
                 self.chat_history.add_message(out)
+                self.local_chat_history.add_message(out)
+                
+        if self.execution_type=="parallel":
+            context="\n".join([ k+": "+inter for k,inter in self.intermediatory_steps.items()])
+            self.local_chat_history.add_ai_message(context)
             
-        return last_stable_output
+        #commentary tool
+        
+        out=self._invoke_agent_(self.local_chat_history)
+        #print(self.local_chat_history)
+        
+        return out.content,self.state_dict.state
         

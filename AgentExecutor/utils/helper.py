@@ -2,7 +2,7 @@ from utils import parser
 from AgentExecutor.src import agents,crew
 
 #IMPORT ALL TOOLS HERE
-from Tools.src.rag.rag_tools import rag,kg_rag,mergetool
+from Tools.src.rag.rag_tools import rag,kg_rag
 from Tools.src.structured_tools.sql_tools import sql_generator,sql_executor
 
 from utils.llmops import llmbuilder
@@ -23,3 +23,4 @@ def create_agents(config):
         )
         all_agents.append(_agent_)
     return all_agents
+

@@ -5,12 +5,13 @@
 
 ## TODO
 
-- [ ] Modify Agent class, remove `isSpecial` flag to implement the above
-  - [ ] if `execution_type` is `'sequential'` : the first tool will get the actual query the others will receive the LLM suggested args
-  - [ ] if  `execution_type` is `'parallel'` : all the tools will receive the user query. `mergeFunction` with merge the output of all the tools and finally commentery will be given
-  - [ ] add a `commentry` function at the end of each agent, which can summarize the whole ReAct execution to provide the summary
-    - [ ] this can be controled by flag `return_direct` on agent initialization
-  - [ ] Add additional details on `verbose`
+- [X] Modify Agent class, remove `isSpecial` flag to implement the above
+  - [X] if `execution_type` is `'sequential'` : the first tool will get the actual query the others will receive the LLM suggested args
+  - [X] if  `execution_type` is `'parallel'` : all the tools will receive the user query. `mergeFunction` with merge the output of all the tools and finally commentery will be given
+  - [X] add a `commentry` function at the end of each agent, which can summarize the whole ReAct execution to provide the summary
+    - [X] this can be controled by flag `return_direct` on agent initialization
+  - [X] Add additional details on `verbose`
+  - [X] Add `Metadata` tags to tool return statements
 
 
 
@@ -83,6 +84,10 @@ Agent takes in 4 required arguments:
 - `desc`: What is is supposed to do
 - `llm`: Configaration for the LLM
 - `tools`: List of tools [for details look at Tools> README]
+- `execution_type`: `sequential` or `parallel` 
+  - if `parallel` it will run the tools parallely and Merge the output of the tools
+
+
 ```python
 from AgentExectutor.src import agents
 
@@ -104,19 +109,6 @@ To Execute an Agent
 agent._execute_agent(query)
 ```
 
-
-**Note**: `"isSpecial":True` is used when the tool needs intermediatory steps. 
-- if `"isSpecial":True` then in function defination should have `intermediatory_steps` as a argument
-```python
-function_config={
-    "dummy":{
-        "isSpecial":True
-    },
-}
-def dummy(query,intermediatory_steps:dict)
-```
-
-
 ## Multi-Agent
 
 ```python
@@ -131,3 +123,45 @@ crew_of_agents=crew.Crew(
 print(crew_of_agents.run("who is indresh"))
 ```
 
+## Using Langchain Community Tools
+
+```python
+from langchain_openai.chat_models import AzureChatOpenAI
+import json
+
+
+#local imports
+
+from langchain_community.tools import DuckDuckGoSearchRun
+from langchain_community.tools.wikidata.tool import WikidataAPIWrapper, WikidataQueryRun
+
+from AgentExecutor.src import agents
+from _temp.config import OpenAIConfig
+from dataclasses import asdict
+from utils import parser
+
+search = DuckDuckGoSearchRun()
+wikidata = WikidataQueryRun(api_wrapper=WikidataAPIWrapper())
+tools=[search,wikidata]
+
+
+llm=AzureChatOpenAI(**asdict(OpenAIConfig()))
+
+
+agent= agents.Agent(
+    role="Search Engine",
+    desc="You are a Search Engine , who will find Infomation about subject from the internet",
+    #instruct_promt="Give Me The answers in Bullet points",
+    output_prompt="If you dont have the Answer reply with 'I don't know'. Don't say anything else",
+    llm=llm,
+    tools=tools,
+    config={},
+    verbose=True,
+    execution_type='parallel'
+)
+
+
+print(agent._execute_agent("who is indresh bhattacharya"))
+#print("OUTPUT:",rag_agent._execute_agent("Where does indresh work"))
+
+```

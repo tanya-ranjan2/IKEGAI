@@ -18,18 +18,8 @@
                         "name":"kg_rag",
                         "args": {},
                         "isSpecial": false
-                    },
-                    {
-                        "name": "mergetool",
-                        "args": {
-                            "llm": "func_llmbuilder(name='azureopenai')",
-                            "prev_tools": [
-                                "rag",
-                                "kg_rag"
-                            ]
-                        },
-                        "isSpecial": true
                     }
+                    
                 ]
             },
             {

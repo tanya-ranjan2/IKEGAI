@@ -29,7 +29,6 @@ function_config={
 config_data=json.load(open('_temp/configManager.json'))
 agent_details=parser.get_agent_details(config_data)
 
-API_KEY="312ff50d6d954023b8748232617327b6"
 llm=AzureChatOpenAI(**asdict(OpenAIConfig()))
 
 

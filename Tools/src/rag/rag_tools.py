@@ -4,7 +4,7 @@ from langchain_openai.chat_models import AzureChatOpenAI
 
 #local Imports
 from Tools.src import tool_utils
-from Tools.schema.rag_schema import MergeTool,KGTool,RagTool
+from Tools.schema.rag_schema import KGTool,RagTool
 from Tools.src.rag import rag_utils
 from utils.llmops import llmbuilder
 
@@ -33,14 +33,19 @@ def chatmodel(qs,context,llm):
 
 
 @tool(return_direct=False,args_schema=RagTool)
-def rag(query:str,storage_name:str)->list:
+def rag(query:str,storage_name:str,**kwargs)->list:
     """Returns results from searching documents in vector database"""
-    #embeddings=rag_utils.load_embeddings()
-    #db=rag_utils.load_vectordb(storage_name,embeddings)
+    agent_state=kwargs['state']
     
-    #documents=db.invoke(query)
-    #return rag_utils.make_context(documents)
-    return "Search VectorDB"
+    embeddings=rag_utils.load_embeddings()
+    db=rag_utils.load_vectordb(storage_name,embeddings)
+    
+    documents=db.invoke(query)
+    reference=[i.metadata for i in documents]
+    print(reference)
+    agent_state.state['rag']=reference
+    return rag_utils.make_context(documents)
+    #return "Search VectorDB"
     
 
 @tool(return_direct=True,args_schema=KGTool)
@@ -48,18 +53,3 @@ def kg_rag(query:str)->list:
     """Returns results from searching documents in Knowledge Graph"""
     return "Knowledge Graph"
 
-@tool(args_schema=MergeTool)
-def mergetool(query:str,llm:str=None,prev_tools=None,intermediatory_steps=None)->str:
-    """Merge the output of other tools and gives response to the user."""
-    #print(query,llm,prev_tools,intermediatory_steps)
-    '''
-    is_func=tool_utils.check_if_func_call_required(llm)
-    if is_func:
-        llm_func=eval(is_func)
-    merged_context="" 
-    for i in prev_tools:
-        merged_context+=intermediatory_steps[i]
-    out=chatmodel(query,merged_context,llm_func)
-    return out.content
-    '''
-    return "Responce"

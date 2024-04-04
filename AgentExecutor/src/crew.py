@@ -39,6 +39,8 @@ class Crew:
             agent_name['name']:agent_func for agent_name, agent_func in zip(self.functions,self.agents)
         }
         self.chain = self.prompt | self.llm.bind(functions=self.functions)
+        
+        self.metadata={}
     
     def _create_prompt_history_(self,system_prompt):
         chat_prompt=ChatPromptTemplate.from_messages(
@@ -68,7 +70,8 @@ class Crew:
         return out
     def _run_tool(self,function_info,query):
         tool=function_info["name"]
-        out=self.agent_info[tool]._execute_agent(query)
+        out,metadata=self.agent_info[tool]._execute_agent(query)
+        self.metadata.update(metadata)
         return tool,out
         
     def run(self,query):
@@ -85,4 +88,4 @@ class Crew:
             self.chat_history.add_message(func_msg)
             last_stable_output=tool_output
             
-        return last_stable_output
+        return last_stable_output,self.metadata
