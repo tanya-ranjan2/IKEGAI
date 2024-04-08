@@ -16,6 +16,8 @@ def create_agents(config):
         _agent_= agents.Agent(
             role=agent_detail['role'],
             desc=agent_detail['desc'],
+            instruct_promt=agent_detail['instruct_promt'],
+            output_prompt=agent_detail['output_prompt'],
             llm=llm,
             tools=[eval(t) for t in agent_detail['tools']],
             config=agent_detail['func_config'],

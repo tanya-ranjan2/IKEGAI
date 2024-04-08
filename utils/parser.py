@@ -19,7 +19,9 @@ def get_agent_details(json_data:dict)->dict:
         agent_details.append({
             "name":name,
             "role":prompt_manager[name]['role'],
-            "desc":prompt_manager[name]['desc'],
+            "desc":prompt_manager[name]['base_prompt'],
+            "instruction_prompt": prompt_manager[name]['instruction_prompt'],
+            "output_prompt": prompt_manager[name]['output_prompt'],
             "func_config":func_config,
             "tools":get_tools(agent['tools'])
         })

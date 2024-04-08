@@ -11,7 +11,7 @@ class StateDict:
 
 
 class Agent:
-    def __init__(self,role:str,desc:str,tools:list,llm,instruct_promt=None,output_prompt=None,config:dict={},verbose:bool=False,execution_type:str="seq") -> None:
+    def __init__(self,role:str,desc:str,tools:list,llm,instruct_promt=None,output_prompt=None,state={},config:dict={},verbose:bool=False,execution_type:str="seq") -> None:
         """_summary_
 
         Args:
@@ -50,6 +50,8 @@ class Agent:
         self.intermediatory_steps={}
         self.config=config
         self.state_dict=StateDict()
+        self.state_dict.state.update(state)
+        
         
         
     def _set_local_history_(self):
