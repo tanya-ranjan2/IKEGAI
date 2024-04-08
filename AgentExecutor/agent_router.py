@@ -11,10 +11,12 @@ from utils import parser,llmops,APIconnector
 router=APIRouter(prefix='/agent',tags=["agent_execution"])
 
 
-@router.post("/get_details/")
-def get_agent_details(uid:agent_schema.AgentID):
+
+
+@router.get("/get_details/{uid}")
+def get_agent_details(uid):
     
-    return {"uid":uid.uid}
+    return {"uid":uid}
 
 @router.post("/execute_agent/")
 def execute_agent(agent_info:agent_schema.AgentExecute):
