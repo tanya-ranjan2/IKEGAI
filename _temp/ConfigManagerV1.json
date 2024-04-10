@@ -1,0 +1,47 @@
+{
+  "id": "TEST123",
+  "usecase_info": {
+    "name": "Test Architecture",
+    "desc": "This is a test Architecture",
+    "func": "string",
+    "logo": "string",
+    "publish": "public",
+    "stage": "string"
+  },
+  "config_manager": {
+    "llm_params": {
+      "llm_type": "commercial",
+      "llm_name": "AzureOpenAI",
+      "model_version": "2024-02-15-preview"
+    },
+    "agents": [
+      {
+        "agent_id": "A1",
+        "name": "DocumentAgent",
+        "prompt": {
+          "role": "librarian",
+          "base_prompt": "You search documents for answers and give the answers, always use the tools to search documents.\n Use all the tools required without asking the user.\n Use all possible search tools and finally merge the serch results to respond.\n Do not Change the `user input` for the for the search tools.",
+          "instruction_prompt": "string",
+          "output_prompt": "string",
+          "tone": "string"
+        },
+        "tools": [
+          {
+            "tool_id": "T1",
+            "tool_name": "rag",
+            "args": {},
+            "prompt": {
+              "role": "string",
+              "base_prompt": "string",
+              "instruction_prompt": "string",
+              "output_prompt": "string",
+              "tone": "string"
+            },
+            "isSpecial": false,
+            "additionalProp1": {}
+          }
+        ]
+      }
+    ]
+  }
+}

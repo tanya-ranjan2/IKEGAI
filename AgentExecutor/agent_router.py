@@ -20,7 +20,7 @@ def get_agent_details(uid):
 
 @router.post("/execute_agent/")
 def execute_agent(agent_info:agent_schema.AgentExecute):
-    config_data=APIconnector.get_usecase_details(agent_info['uid'])
+    config_data=APIconnector.get_usecase_details(agent_info.uid)
     llm=llmops.llmbuilder("azureopenai")
     rag_agent=helper.create_agents(config_data)[0]
     out,metadata=rag_agent._execute_agent(agent_info.query)
@@ -29,7 +29,7 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
 
 @router.post("/excute/")
 def execute(agent_info:agent_schema.AgentExecute):
-    config_data=APIconnector.get_usecase_details(agent_info['uid'])
+    config_data=APIconnector.get_usecase_details(agent_info.uid)
     llm=llmops.llmbuilder("azureopenai")
     agents_all=helper.create_agents(config_data)
     agent_crew=crew.Crew(agents=agents_all,llm=llm,)
