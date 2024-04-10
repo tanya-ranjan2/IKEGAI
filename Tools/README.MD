@@ -106,8 +106,12 @@ class RagTool(BaseModel, extra=Extra.allow):
 @tool(return_direct=False,args_schema=RagTool)
 def rag(query:str,storage_name:str,**kwargs)->list:
     """Returns results from searching documents in vector database"""
-    agent_state=kwargs['state']
-    
+    # For Acessing internal State of tools
+    agent_state=kwargs['state'].state
+
+    # For Acessing internal configation of Agent
+     agent_config=kwargs['state'].config
+
     embeddings=rag_utils.load_embeddings()
     db=rag_utils.load_vectordb(storage_name,embeddings)
     

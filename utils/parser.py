@@ -28,7 +28,7 @@ def get_agent_details(json_data:dict)->dict:
     return agent_details
 def get_tools(tool_data:dict) ->list:   
     
-    return [tool['name'] for tool in tool_data]
+    return [tool['tool_name'] for tool in tool_data]
 
 def convert_to_func_config(tool_data:dict)->dict:
     """Convert tools details into Agent usable format
@@ -45,8 +45,7 @@ def convert_to_func_config(tool_data:dict)->dict:
     """
     config_dict={}
     for tool in tool_data:
-        config_dict[tool['name']]={
+        config_dict[tool['tool_name']]={
             "default_args":tool['args'],
-            "isSpecial":tool['isSpecial']
         }
     return config_dict

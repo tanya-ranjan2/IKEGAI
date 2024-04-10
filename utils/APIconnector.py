@@ -1,7 +1,7 @@
 import requests
 
 def get_usecase_details(uid):
-    res=requests.get(f"https://ikegai.southindia.cloudapp.azure.com/solution-manager/v1/useCase/?id={uid}")
+    res=requests.get(f"https://ikegai.southindia.cloudapp.azure.com/solution-manager/v1/useCase/usecase-by-id?id={uid}")
     if res.status_code==200:
         return res.json()['data']
     else:
@@ -9,4 +9,4 @@ def get_usecase_details(uid):
     
     
 if __name__=="__main__":
-    print(get_usecase_details('US123'))
+    print(get_usecase_details('TEST123'))

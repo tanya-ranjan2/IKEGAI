@@ -8,6 +8,7 @@ from dataclasses import dataclass
 @dataclass
 class StateDict:
     state={}
+    config={}
 
 
 class Agent:
@@ -33,6 +34,7 @@ class Agent:
         self.tools=tools
         self.llm=llm
         self.execution_type=execution_type
+        self.tool_calls=""
         # Converts the tools to openai formated tool_calls
         self.functions=[convert_to_openai_function(t) for t in tools]
         # Converts the tools to {tool_name: tool_func} format
@@ -50,7 +52,8 @@ class Agent:
         self.intermediatory_steps={}
         self.config=config
         self.state_dict=StateDict()
-        self.state_dict.state.update(state)
+        self.state_dict.config.update(state)
+        
         
         
         
@@ -184,8 +187,14 @@ class Agent:
         #last_stable_output=out.content
         while "function_call" in out.additional_kwargs:
             if "function_call" in out.additional_kwargs:
+                tool_name=out.additional_kwargs['function_call']['name']
+                if tool_name==self.tool_calls:
+                    self.chat_history.messages=self.chat_history.messages[:-1]
+                    self.local_chat_history.messages=self.local_chat_history.messages[:-1]
+                    break
                 if self.verbose:
                     print("tool_call:",out.additional_kwargs)
+                
                 tool_name,tool_output=self._run_tool(out.additional_kwargs["function_call"])
                 func_msg=FunctionMessage(name=tool_name,content=tool_output)
                 
@@ -193,6 +202,7 @@ class Agent:
                 self.local_chat_history.add_message(func_msg)
                 
                 self.intermediatory_steps[tool_name]=tool_output
+                self.tool_calls=tool_name
                 #last_stable_output=tool_output
             #check if more info is required
             self.chat_history.add_user_message("Is there any other tool that can be used for the task? Answer only in 'yes' or 'no'")
@@ -210,7 +220,7 @@ class Agent:
             self.local_chat_history.add_ai_message(context)
             
         #commentary tool
-        
+        #print(self.local_chat_history)
         out=self._invoke_agent_(self.local_chat_history)
         #print(self.local_chat_history)
         

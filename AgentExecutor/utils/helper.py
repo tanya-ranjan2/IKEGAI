@@ -12,16 +12,19 @@ def create_agents(config):
     llm=llmbuilder("azureopenai")
     all_agents=[]
     for agent_detail in agent_details:
-        
+        out_prompt=f'''
+        - Give the responce in a {agent_detail['output_prompt']['tone']} tone
+        '''
         _agent_= agents.Agent(
             role=agent_detail['role'],
             desc=agent_detail['desc'],
-            instruct_promt=agent_detail['instruct_promt'],
-            output_prompt=agent_detail['output_prompt'],
+            instruct_promt= agent_detail['instruction_prompt'] if agent_detail['instruction_prompt']!='string' else None,
+            output_prompt=out_prompt,
             llm=llm,
             tools=[eval(t) for t in agent_detail['tools']],
             config=agent_detail['func_config'],
-            verbose=True
+            verbose=True,
+            state=config
         )
         all_agents.append(_agent_)
     return all_agents

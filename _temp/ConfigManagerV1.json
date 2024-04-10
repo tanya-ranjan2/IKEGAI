@@ -22,8 +22,11 @@
           "role": "librarian",
           "base_prompt": "You search documents for answers and give the answers, always use the tools to search documents.\n Use all the tools required without asking the user.\n Use all possible search tools and finally merge the serch results to respond.\n Do not Change the `user input` for the for the search tools.",
           "instruction_prompt": "string",
-          "output_prompt": "string",
-          "tone": "string"
+          "output_prompt":{
+            "tone": "friendly",
+            "rules": "string",
+            "verification_criteria": "string"
+          }
         },
         "tools": [
           {
@@ -34,8 +37,11 @@
               "role": "string",
               "base_prompt": "string",
               "instruction_prompt": "string",
-              "output_prompt": "string",
-              "tone": "string"
+              "output_prompt": {
+                "tone": "friendly",
+                "rules": "string",
+                "verification_criteria": "string"
+              }
             },
             "isSpecial": false,
             "additionalProp1": {}
@@ -43,5 +49,9 @@
         ]
       }
     ]
+  },
+  "data_sources": {
+    "storage_name":"TBD/profile",
+    "collection_name":""
   }
 }
