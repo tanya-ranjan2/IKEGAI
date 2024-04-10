@@ -126,3 +126,60 @@ def rag(query:str,storage_name:str,**kwargs)->list:
 - the tool defination should have `**kwargs`
 - you can access the state using `kwargs['state']`
 - <b>Remember:</b> this state will be accessable to all the tools and agents
+
+
+### Register a tool
+
+Use `register_tool.py` to get Json Format for the tool
+
+you can make changes required to the tool, before pushing into to the master API
+
+Once you run the below utility
+
+```python
+from Tools.utils.helper import convert_tool_into_master_schema
+import json
+
+
+# Import the tool to register
+from Tools.src.rag.rag_tools import rag
+
+out=convert_tool_into_master_schema(rag)
+
+print(json.dumps(out, indent=4))
+```
+
+you will get a json Format like below. You can make changes to the same 
+
+```json
+{
+    "tool_name": "rag",
+    "tool_desc": "Returns results from searching documents in vector database",
+    "fields": [
+        {
+            "name": "query",
+            "desc": "original `user input`",
+            "type": "text",
+            "value": null,
+            "isMandatory": true
+        },
+        {
+            "name": "topk",
+            "desc": "No of document chunks to retrived. By default it is 3.",
+            "type": "number",
+            "value": 3,
+            "isMandatory": false
+        },
+        {
+            "name": "llm",
+            "desc": "Name of LLM",
+            "type": "selectbox",
+            "value": [
+                "AzureOpenAI",
+                "Hugginface"
+            ],
+            "isMandatory": true
+        }
+    ]
+}
+```

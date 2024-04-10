@@ -12,16 +12,17 @@ from utils.llmops import llmbuilder
 
 
 @tool(return_direct=False,args_schema=RagTool)
-def rag(query:str,**kwargs)->list:
+def rag(query:str,llm:str,topk:int=3,**kwargs)->list:
     """Returns results from searching documents in vector database"""
     agent_state=kwargs['state']
     data_sourse=agent_state.config['data_sources']
     embeddings=rag_utils.load_embeddings()
-    db=rag_utils.load_vectordb(data_sourse['storage_name'],embeddings)
+    db=rag_utils.load_vectordb(data_sourse['storage_name'],embeddings,collection_name=data_sourse['collection_name'],topk=topk)
     
     documents=db.invoke(query)
     reference=[i.metadata for i in documents]
     agent_state.state['sources']=reference
+    
     return rag_utils.make_context(documents)
     #return "Search VectorDB"
     

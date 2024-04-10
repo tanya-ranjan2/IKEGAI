@@ -7,7 +7,7 @@ from chromadb.config import Settings
 from dataclasses import dataclass,asdict
 
 def load_embeddings():
-    embeddings=HuggingFaceEmbeddings()
+    embeddings=HuggingFaceEmbeddings(model_name="intfloat/e5-base-v2")
     return embeddings
 
 def load_vectordb(persist_directory,embeddings,topk=2,collection_name=None):
