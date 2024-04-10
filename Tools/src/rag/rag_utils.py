@@ -2,9 +2,13 @@
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from _temp.config import ChromaClient
-import chromadb
 from chromadb.config import Settings
 from dataclasses import dataclass,asdict
+
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3']= sys.modules.pop('pysqlite3')
+import chromadb
 
 def load_embeddings():
     embeddings=HuggingFaceEmbeddings(model_name="intfloat/e5-base-v2")
