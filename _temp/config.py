@@ -6,4 +6,11 @@ class OpenAIConfig:
     azure_endpoint:str="https://openai-lh.openai.azure.com/"
     azure_deployment:str="test"
     api_version:str="2024-02-15-preview"
+    
+    
+    
+@dataclass
+class ChromaClient:
+    host:str="http://20.41.249.147:6062"
+    port:int=8000
 

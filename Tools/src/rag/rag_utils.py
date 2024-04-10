@@ -1,15 +1,21 @@
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
-
-
+from _temp.config import ChromaClient
+import chromadb
+from chromadb.config import Settings
+from dataclasses import dataclass,asdict
 
 def load_embeddings():
     embeddings=HuggingFaceEmbeddings()
     return embeddings
 
-def load_vectordb(persist_directory,embeddings,topk=2):
-    db=Chroma(persist_directory=persist_directory,embedding_function=embeddings)
+def load_vectordb(persist_directory,embeddings,topk=2,collection_name=None):
+    client = chromadb.HttpClient(**asdict(ChromaClient()))
+    if collection_name==None or collection_name=="":
+        db=Chroma(persist_directory=persist_directory,embedding_function=embeddings,client=client)
+    else:
+        db=Chroma(persist_directory=persist_directory,embedding_function=embeddings,client=client,collection_name=collection_name)
     retriver=db.as_retriever(search_type="similarity", search_kwargs={"k": topk})
     return retriver
 

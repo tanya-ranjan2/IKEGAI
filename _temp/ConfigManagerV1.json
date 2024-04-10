@@ -28,11 +28,13 @@
             "verification_criteria": "string"
           }
         },
+        "run_parallel":false,
         "tools": [
           {
             "tool_id": "T1",
             "tool_name": "rag",
-            "args": {},
+            "tool_desc":"This is Rag",
+            "fields": [],
             "prompt": {
               "role": "string",
               "base_prompt": "string",
@@ -51,7 +53,7 @@
     ]
   },
   "data_sources": {
-    "storage_name":"TBD/profile",
-    "collection_name":""
+    "storage_name":"test_pdf",
+    "collection_name":"test_pdf"
   }
 }
