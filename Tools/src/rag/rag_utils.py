@@ -6,10 +6,6 @@ import chromadb
 from chromadb.config import Settings
 from dataclasses import dataclass,asdict
 
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3']= sys.modules.pop('pysqlite3')
-
 def load_embeddings():
     embeddings=HuggingFaceEmbeddings(model_name="intfloat/e5-base-v2")
     return embeddings
