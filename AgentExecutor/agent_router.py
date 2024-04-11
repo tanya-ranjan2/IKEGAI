@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from AgentExecutor.schema import agent_schema
 from AgentExecutor.src import agents,crew
 from AgentExecutor.utils import helper
+import requests
 
 #<CODEBLOCk>
 import json
@@ -21,6 +22,13 @@ def get_agent_details(uid):
 @router.post("/execute_agent/")
 def execute_agent(agent_info:agent_schema.AgentExecute):
     config_data=APIconnector.get_usecase_details(agent_info.uid)
+    
+    if config_data['is_direct_api']:
+        res=requests.post(url=config_data['api_url'],json={"uid":agent_info.uid,"query":agent_info.query},headers={"content-type":"application/json"})
+        if res.status_code==200:
+            return res.json()
+        else:
+            return {"status":404}
     llm=llmops.llmbuilder("azureopenai")
     rag_agent=helper.create_agents(config_data)[0]
     out,metadata=rag_agent._execute_agent(agent_info.query)
