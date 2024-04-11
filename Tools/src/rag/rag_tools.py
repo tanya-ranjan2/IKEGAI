@@ -12,7 +12,7 @@ from utils.llmops import llmbuilder
 
 
 @tool(return_direct=False,args_schema=RagTool)
-def rag(query:str,llm:str,topk:int=3,**kwargs)->list:
+def rag(query:str,topk:int=3,**kwargs)->list:
     """Returns results from searching documents in vector database"""
     agent_state=kwargs['state']
     data_sourse=agent_state.config['data_sources']
