@@ -42,6 +42,7 @@ class Crew:
         
         self.metadata={}
         self.followup=[]
+        self.tokens={'completion_tokens': 0, 'prompt_tokens': 0, 'total_tokens': 0}
     
     def _create_prompt_history_(self,system_prompt):
         chat_prompt=ChatPromptTemplate.from_messages(
@@ -68,6 +69,9 @@ class Crew:
                     "messages": self.chat_history.messages,
                 }
             )
+        self.tokens['completion_tokens']=out.response_metadata['token_usage']['completion_tokens']
+        self.tokens['prompt_tokens']=out.response_metadata['token_usage']['prompt_tokens']
+        self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
         return out
     def _run_tool(self,function_info,query):
         tool=function_info["name"]

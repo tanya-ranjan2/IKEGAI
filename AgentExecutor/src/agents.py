@@ -57,7 +57,9 @@ class Agent:
         self.config=config
         self.state_dict=StateDict()
         self.state_dict.config.update(state)
+        # Tokens
         
+        self.tokens={'completion_tokens': 0, 'prompt_tokens': 0, 'total_tokens': 0}
         
         
     def followup_qa(self):
@@ -154,6 +156,9 @@ class Agent:
                     "messages": chat_history.messages,
                 }
             )
+        self.tokens['completion_tokens']=out.response_metadata['token_usage']['completion_tokens']
+        self.tokens['prompt_tokens']=out.response_metadata['token_usage']['prompt_tokens']
+        self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
         return out
     
     def _invoke_comment_agent_(self,chat_history):
@@ -167,6 +172,9 @@ class Agent:
                     "messages": chat_history.messages,
                 }
             )
+        self.tokens['completion_tokens']=out.response_metadata['token_usage']['completion_tokens']
+        self.tokens['prompt_tokens']=out.response_metadata['token_usage']['prompt_tokens']
+        self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
         return out
     
     def _invoke_followup_agent_(self,chat_history):
@@ -180,6 +188,9 @@ class Agent:
                     "messages": chat_history.messages,
                 }
             )
+        self.tokens['completion_tokens']=out.response_metadata['token_usage']['completion_tokens']
+        self.tokens['prompt_tokens']=out.response_metadata['token_usage']['prompt_tokens']
+        self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
         return out
     
     def print_chat_history(self):
@@ -271,5 +282,6 @@ class Agent:
         #followup tool
         followup=self._invoke_followup_agent_(self.local_chat_history)
         followup=followup.content.split('\n')
+        self.state_dict.state['Tokens']=self.tokens
         return out.content,self.state_dict.state,followup
         

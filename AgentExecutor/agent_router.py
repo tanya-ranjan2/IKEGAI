@@ -22,7 +22,7 @@ def get_agent_details(uid):
 @router.post("/execute_agent/")
 def execute_agent(agent_info:agent_schema.AgentExecute):
     config_data=APIconnector.get_usecase_details(agent_info.uid)
-    #print("CONFIG",config_data)
+    print("CONFIG",config_data)
     if 'is_direct_api' in config_data:
         #print("API_URL",config_data['api_url'])
         if config_data['is_direct_api']:
