@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 from AgentExecutor import agent_router
 from fastapi.middleware.cors import CORSMiddleware
-'''
+
 __import__('pysqlite3')
 import sys
 sys.modules['sqlite3']= sys.modules.pop('pysqlite3')
-'''
+
 import chromadb
 
 app=FastAPI(
