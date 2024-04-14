@@ -65,8 +65,8 @@
             "run_parallel": false,
             "prompt": {
               "prompt_id": "string",
-              "role": "Database Administrator",
-              "base_prompt": "Your job is to generate and execute SQL queries from the `user query` which is in natural language.\n  Use all the tools required without asking the user.\n",
+              "role": "Reseacher",
+              "base_prompt": "Your job is to research on topics that you dont have knowledge on",
               "instruction_prompt": "string",
               "output_prompt": {
                 "tone": "friendly",
@@ -77,8 +77,8 @@
             "tools": [
               {
                 "tool_id": "T2",
-                "tool_name": "sql_generator",
-                "tool_desc": "This is SQLGenerator tool",
+                "tool_name": "DuckDuckGo",
+                "tool_desc": "Search Engine",
                 "fields": [
                   {}
                 ],
@@ -95,31 +95,8 @@
                 },
                 "isSpecial": false,
                 "additionalProp1": {}
-              },
-              {
-                "tool_id": "T3",
-                "tool_name": "sql_executor",
-                "tool_desc": "This is SQLExecutor tool",
-                "fields": [
-                  {
-                    "name":"creds",
-                    "value":{}
-                  }
-                ],
-                "prompt": {
-                  "prompt_id": "string",
-                  "role": "string",
-                  "base_prompt": "string",
-                  "instruction_prompt": "string",
-                  "output_prompt": {
-                    "tone": "friendly",
-                    "rules": "string",
-                    "verification_criteria": "string"
-                  }
-                },
-                "isSpecial": false,
-                "additionalProp1": {}
               }
+              
             ]
           }
       ]

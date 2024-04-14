@@ -69,9 +69,10 @@ class Crew:
                     "messages": self.chat_history.messages,
                 }
             )
-        self.tokens['completion_tokens']=out.response_metadata['token_usage']['completion_tokens']
-        self.tokens['prompt_tokens']=out.response_metadata['token_usage']['prompt_tokens']
-        self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
+        if 'token_usage' in out.response_metadata:
+            self.tokens['completion_tokens']=out.response_metadata['token_usage']['completion_tokens']
+            self.tokens['prompt_tokens']=out.response_metadata['token_usage']['prompt_tokens']
+            self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
         return out
     def _run_tool(self,function_info,query):
         tool=function_info["name"]

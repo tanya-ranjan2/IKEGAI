@@ -17,6 +17,9 @@ mediawikiapi = "^1.2"
 wikibase-rest-api-client = "^0.1.3"
 wikipedia = "^1.4.0"
 yfinance = "^0.2.37"
+arxiv = "^2.1.0"
+youtube-search = "^2.1.2"
+stackapi = "^0.3.0"
 
 
 [build-system]

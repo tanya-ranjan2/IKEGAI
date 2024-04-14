@@ -156,9 +156,10 @@ class Agent:
                     "messages": chat_history.messages,
                 }
             )
-        self.tokens['completion_tokens']=out.response_metadata['token_usage']['completion_tokens']
-        self.tokens['prompt_tokens']=out.response_metadata['token_usage']['prompt_tokens']
-        self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
+        if 'token_usage' in out.response_metadata:
+            self.tokens['completion_tokens']=out.response_metadata['token_usage']['completion_tokens']
+            self.tokens['prompt_tokens']=out.response_metadata['token_usage']['prompt_tokens']
+            self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
         return out
     
     def _invoke_comment_agent_(self,chat_history):
@@ -172,9 +173,10 @@ class Agent:
                     "messages": chat_history.messages,
                 }
             )
-        self.tokens['completion_tokens']=out.response_metadata['token_usage']['completion_tokens']
-        self.tokens['prompt_tokens']=out.response_metadata['token_usage']['prompt_tokens']
-        self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
+        if 'token_usage' in out.response_metadata:
+            self.tokens['completion_tokens']=out.response_metadata['token_usage']['completion_tokens']
+            self.tokens['prompt_tokens']=out.response_metadata['token_usage']['prompt_tokens']
+            self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
         return out
     
     def _invoke_followup_agent_(self,chat_history):
@@ -188,9 +190,10 @@ class Agent:
                     "messages": chat_history.messages,
                 }
             )
-        self.tokens['completion_tokens']=out.response_metadata['token_usage']['completion_tokens']
-        self.tokens['prompt_tokens']=out.response_metadata['token_usage']['prompt_tokens']
-        self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
+        if 'token_usage' in out.response_metadata:
+            self.tokens['completion_tokens']=out.response_metadata['token_usage']['completion_tokens']
+            self.tokens['prompt_tokens']=out.response_metadata['token_usage']['prompt_tokens']
+            self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
         return out
     
     def print_chat_history(self):
