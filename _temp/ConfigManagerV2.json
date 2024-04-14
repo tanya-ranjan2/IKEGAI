@@ -1,0 +1,137 @@
+{
+    "id": "MULTI123",
+    "is_direct_api": false,
+    "api_url": "",
+    "usecase_info": {
+      "name": "MutiAgentTest",
+      "desc": "Test Architecture for Multiple Agents",
+      "func": "Dev",
+      "logo": "string",
+      "publish": "public",
+      "stage": "draft"
+    },
+    "config_manager": {
+        "llm_params": {
+            "llm_type": "commercial",
+            "llm_name": "AzureOpenAI",
+            "model_version": "2024-02-15-preview"
+        },
+      "agents": [
+        {
+          "agent_id": "A1",
+          "name": "DocumentAgent",
+          "run_parallel": false,
+          "prompt": {
+            "prompt_id": "string",
+            "role": "Librarian",
+            "base_prompt": "You search documents for answers and give the answers, always use the tools to search documents.\n Use all the tools required without asking the user.\n Use all possible search tools and finally merge the serch results to respond.\n Do not Change the `user input` for the for the search tools.",
+            "instruction_prompt": "string",
+            "output_prompt": {
+              "tone": "friendly",
+              "rules": "string",
+              "verification_criteria": "string"
+            }
+          },
+          "tools": [
+            {
+              "tool_id": "T1",
+              "tool_name": "rag",
+              "tool_desc": "This is Rag",
+              "fields": [
+                {
+                    "topk":3
+                }
+              ],
+              "prompt": {
+                "prompt_id": "string",
+                "role": "string",
+                "base_prompt": "string",
+                "instruction_prompt": "string",
+                "output_prompt": {
+                  "tone": "friendly",
+                  "rules": "string",
+                  "verification_criteria": "string"
+                }
+              },
+              "isSpecial": false,
+              "additionalProp1": {}
+            }
+          ]
+        },
+        {
+            "agent_id": "A2",
+            "name": "SQLAgent",
+            "run_parallel": false,
+            "prompt": {
+              "prompt_id": "string",
+              "role": "Database Administrator",
+              "base_prompt": "Your job is to generate and execute SQL queries from the `user query` which is in natural language.\n  Use all the tools required without asking the user.\n",
+              "instruction_prompt": "string",
+              "output_prompt": {
+                "tone": "friendly",
+                "rules": "string",
+                "verification_criteria": "string"
+              }
+            },
+            "tools": [
+              {
+                "tool_id": "T2",
+                "tool_name": "sql_generator",
+                "tool_desc": "This is SQLGenerator tool",
+                "fields": [
+                  {}
+                ],
+                "prompt": {
+                  "prompt_id": "string",
+                  "role": "string",
+                  "base_prompt": "string",
+                  "instruction_prompt": "string",
+                  "output_prompt": {
+                    "tone": "friendly",
+                    "rules": "string",
+                    "verification_criteria": "string"
+                  }
+                },
+                "isSpecial": false,
+                "additionalProp1": {}
+              },
+              {
+                "tool_id": "T3",
+                "tool_name": "sql_executor",
+                "tool_desc": "This is SQLExecutor tool",
+                "fields": [
+                  {
+                    "creds":{
+
+                    }
+                  }
+                ],
+                "prompt": {
+                  "prompt_id": "string",
+                  "role": "string",
+                  "base_prompt": "string",
+                  "instruction_prompt": "string",
+                  "output_prompt": {
+                    "tone": "friendly",
+                    "rules": "string",
+                    "verification_criteria": "string"
+                  }
+                },
+                "isSpecial": false,
+                "additionalProp1": {}
+              }
+            ]
+          }
+      ]
+    },
+    "eval_metrics": [
+      {
+        "metric_name": "string",
+        "metric_desc": "string"
+      }
+    ],
+    "data_sources": {
+        "storage_name":"test_pdf",
+        "collection_name":"test_pdf"
+    }
+  }
