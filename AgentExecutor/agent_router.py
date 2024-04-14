@@ -39,7 +39,6 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
         
     else:
         agent_crew=crew.Crew(agents=agents,llm=llm,)
-        print(agent_crew.)
         out,metadata,followup=agent_crew.run(agent_info.query)
     return {"output":out,"metadata":metadata,"followup":followup}
 
