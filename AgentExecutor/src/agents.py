@@ -56,6 +56,7 @@ class Agent:
         self.intermediatory_steps={}
         self.config=config
         self.state_dict=StateDict()
+        self.state_dict.state={}
         self.state_dict.config.update(state)
         # Tokens
         
