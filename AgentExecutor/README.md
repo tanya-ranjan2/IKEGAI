@@ -1,21 +1,4 @@
 
-
-
-
-
-## TODO
-
-- [X] Modify Agent class, remove `isSpecial` flag to implement the above
-  - [X] if `execution_type` is `'sequential'` : the first tool will get the actual query the others will receive the LLM suggested args
-  - [X] if  `execution_type` is `'parallel'` : all the tools will receive the user query. `mergeFunction` with merge the output of all the tools and finally commentery will be given
-  - [X] add a `commentry` function at the end of each agent, which can summarize the whole ReAct execution to provide the summary
-    - [X] this can be controled by flag `return_direct` on agent initialization
-  - [X] Add additional details on `verbose`
-  - [X] Add `Metadata` tags to tool return statements
-
-
-
-
 ## QuickGuide
 
 ### Running an Agent

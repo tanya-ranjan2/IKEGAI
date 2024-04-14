@@ -32,9 +32,15 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
             else:
                 return {"status":404}
     llm=llmops.llmbuilder("azureopenai")
-    rag_agent=helper.create_agents(config_data)[0]
-    out,metadata=rag_agent._execute_agent(agent_info.query)
-    return {"output":out,"metadata":metadata}
+    agents=helper.create_agents(config_data)
+    if len(agents)==1:
+        agent=helper.create_agents(config_data)[0]
+        out,metadata,followup=agent._execute_agent(agent_info.query)
+        
+    else:
+        agent_crew=crew.Crew(agents=agents,llm=llm,)
+        out,metadata,followup=agent_crew.run(agent_info.query)
+    return {"output":out,"metadata":metadata,"followup":followup}
 
 
 @router.post("/excute/")

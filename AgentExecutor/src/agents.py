@@ -46,7 +46,11 @@ class Agent:
         #comment Chain
         self.local_chat_history=self._set_local_history_()
         self.comment_prompt=self.__init__local_chat(self.instruct_promt,self.output_prompt)
-        self.comment_chain=self.prompt | self.llm
+        self.comment_chain=self.comment_prompt | self.llm
+        
+        #Followup Chain
+        self.followup=self._init_followup_()
+        self.followup_chain=self.followup | self.llm
         #create LLM chain 
         self.chain = self.prompt | self.llm.bind(functions=self.functions)
         self.intermediatory_steps={}
@@ -56,6 +60,22 @@ class Agent:
         
         
         
+    def followup_qa(self):
+        pass
+    
+    def _init_followup_(self):
+        prompt=f'''Given the conversation Can you recommend 3 follow up questions. Use only the information from the conversation.
+        '''
+        chat_prompt=ChatPromptTemplate.from_messages(
+            [
+                (
+                    "system",
+                    prompt,
+                ),
+                MessagesPlaceholder(variable_name="messages"),
+            ]
+        )
+        return chat_prompt
         
     def _set_local_history_(self):
         return ChatMessageHistory()
@@ -86,7 +106,7 @@ class Agent:
     
     
     def __init__local_chat(self,instruct_promt,output_prompt):
-        prompt=f'''Summarize the following conversation between a service rep and a customer in a few sentences. Use only the information from the conversation.
+        prompt=f'''Summarize the following conversation in a few sentences. Use only the information from the conversation.
         '''
         if instruct_promt:
             prompt+=f"\n Here is the Instruction for your Job: {instruct_promt}"
@@ -135,6 +155,33 @@ class Agent:
                 }
             )
         return out
+    
+    def _invoke_comment_agent_(self,chat_history):
+        """ Call the LLM model with conversation history
+
+        Returns:
+            Message: Output of the LLM Model
+        """
+        out=self.comment_chain.invoke(
+                {
+                    "messages": chat_history.messages,
+                }
+            )
+        return out
+    
+    def _invoke_followup_agent_(self,chat_history):
+        """ Call the LLM model with conversation history
+
+        Returns:
+            Message: Output of the LLM Model
+        """
+        out=self.followup_chain.invoke(
+                {
+                    "messages": chat_history.messages,
+                }
+            )
+        return out
+    
     def print_chat_history(self):
         """Prints Conversation History
 
@@ -220,9 +267,9 @@ class Agent:
             self.local_chat_history.add_ai_message(context)
             
         #commentary tool
-        #print(self.local_chat_history)
-        out=self._invoke_agent_(self.local_chat_history)
-        #print(self.local_chat_history)
-        
-        return out.content,self.state_dict.state
+        out=self._invoke_comment_agent_(self.local_chat_history)
+        #followup tool
+        followup=self._invoke_followup_agent_(self.local_chat_history)
+        followup=followup.content.split('\n')
+        return out.content,self.state_dict.state,followup
         
