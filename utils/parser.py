@@ -46,6 +46,6 @@ def convert_to_func_config(tool_data:dict)->dict:
     config_dict={}
     for tool in tool_data:
         config_dict[tool['tool_name']]={
-            "default_args":{t['name']:t['value'] for t in tool['fields']},
+            "default_args":{t['name']:t['value'] for t in tool['fields'] if len(t)>0},
         }
     return config_dict

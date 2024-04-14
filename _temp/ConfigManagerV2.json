@@ -39,7 +39,8 @@
               "tool_desc": "This is Rag",
               "fields": [
                 {
-                    "topk":3
+                    "name":"topk",
+                    "value":"3"
                 }
               ],
               "prompt": {
@@ -101,9 +102,8 @@
                 "tool_desc": "This is SQLExecutor tool",
                 "fields": [
                   {
-                    "creds":{
-
-                    }
+                    "name":"creds",
+                    "value":{}
                   }
                 ],
                 "prompt": {
