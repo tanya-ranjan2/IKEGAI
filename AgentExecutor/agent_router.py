@@ -23,7 +23,7 @@ def get_agent_details(uid):
 def execute_agent(agent_info:agent_schema.AgentExecute):
     config_data=APIconnector.get_usecase_details(agent_info.uid)
     print("CONFIG",config_data)
-    if 'is_direct_api' in config_data:
+    if 'is_direct_api' in config_data and 'api_url' in config_data:
         #print("API_URL",config_data['api_url'])
         if config_data['is_direct_api']:
             res=requests.post(url=config_data['api_url'],json={"uid":agent_info.uid,"query":agent_info.query},headers={"content-type":"application/json"})
