@@ -13,7 +13,7 @@ def create_agents(config):
     llm=llmbuilder("azureopenai")
     all_agents=[]
     for agent_detail in agent_details:
-        if agent_detail['output_prompt']['tone']!='string':
+        if agent_detail['output_prompt']!='string':
             out_prompt=f'''
             - Give the responce in a {agent_detail['output_prompt']['tone']} tone
             '''
