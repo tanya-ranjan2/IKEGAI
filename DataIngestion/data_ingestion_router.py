@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 from fastapi import FastAPI, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+
 from fastapi.responses import FileResponse
 import os
 
@@ -9,6 +11,14 @@ from _temp.config import STORAGE_DRIVE
 
 
 router=APIRouter(prefix='/ingestion',tags=["data_ingestion"])
+
+router.add_middleware(
+    CORSMiddleware,
+    allow_origins=['*'],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 if not os.path.exists(STORAGE_DRIVE):
     os.mkdir(STORAGE_DRIVE)
