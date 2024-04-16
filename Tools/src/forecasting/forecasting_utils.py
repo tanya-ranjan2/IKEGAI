@@ -10,11 +10,10 @@ def preprocess(filter_data: list[tuple], feature_parameters: dict) -> pd.DataFra
     all_features.sort()   
     df = pd.DataFrame(filter_data, columns=['date'] + all_features)
     df["date"] = pd.to_datetime(df['date'])
-    df = df.sort_values(by='date')
-    # print
+    df = df.sort_values(by='date') 
     return df 
     
-def forecast_using_prophet_utils(filter_data: list[tuple], feature_parameters: dict, mongo_store: bool = False) -> str : 
+def forecast_using_prophet_utils(filter_data: list[tuple], feature_parameters: dict) -> str : 
     try :
         print('inside forecasting --> ', feature_parameters)
         data = preprocess(filter_data, feature_parameters)
@@ -33,30 +32,21 @@ def forecast_using_prophet_utils(filter_data: list[tuple], feature_parameters: d
 
         print(forecast_df.tail())
 
-        #fig = px.line(
-        #        forecast_df, x ='date', y = feature_parameters['feature'], 
-        #        title = 'Time Series with Rangeslider', markers = True
-        #    )
+        # fig = px.line(
+        #         forecast_df, x ='date', y = feature_parameters['feature'], 
+        #         title = 'Time Series with Rangeslider', markers = True
+        #     )
 
-        #fig.update_xaxes(rangeslider_visible=True)
-        #fig.write_html("plots/new_file.html")
+        # fig.update_xaxes(rangeslider_visible=True)
+        # fig.write_html("plots/new_file.html")
 
-
-        # if mongo_store : 
-        #     client = pymongo.MongoClient("mongodb+srv://ikegai:ikegai%40123456@cluster0.l2apier.mongodb.net")
-        #     db = client["ikegai"]
-        #     forecasting_plot_collection = db["plots"]
-
-        #     with open('path/new_file.html', 'r') as file :
-        #         html_content = file.read()
-
-        #     html_doc = {
-        #         "html_content" : html_content
-        #     }
-
-        #     result = forecasting_plot_collection.insert_one(html_doc)
-
-        return forecast_df
-        # return "success"
+        table_creation = forecast_df.to_dict(orient="tight")
+        chart_creation = forecast_df.to_dict()
+        chart_config = {
+            "type": "line",  
+            "columns": [{"x-axis":["date"], "y-axis":[feature_parameters['feature']]}],  
+            "options": {} 
+        }
+        return table_creation, chart_creation, chart_config 
     except : 
         return "couldn't process with Prophet"
