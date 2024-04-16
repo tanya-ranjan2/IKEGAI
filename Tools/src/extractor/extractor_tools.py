@@ -29,9 +29,10 @@ def extract_keywords(user_query: str, default_days: int = 5, db_path: str = "dat
     filter_data = execute_sql_query(final_result, db_path)
     agent_state.state['filter_data'] = filter_data
 
-    res = forecast_using_prophet_utils(filter_data, final_result)
-    print("Result:",res)
-    if 'days_to_forecast' in final_result:
-        print("Forecast",final_result['days_to_forecast'])
-        return res.tail(final_result['days_to_forecast']).to_markdown()
-    return res
+    table_creation, chart_creation, chart_config = forecast_using_prophet_utils(filter_data, final_result)
+
+    agent_state.state['table'] = table_creation
+    agent_state.state['data'] = chart_creation
+    agent_state.state['chart_config'] = chart_config
+
+    return table_creation
