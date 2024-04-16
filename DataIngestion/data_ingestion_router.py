@@ -24,3 +24,16 @@ async def create_upload_file(file: UploadFile,idx:str):
         f.write(contents)
     uploadpdf.delay(idx,os.path.join(STORAGE_DRIVE,file.filename))
     return {"filename": file.filename}
+
+
+@router.get("/download/{filename}")
+async def dowload(filename:str):
+    pdf_name_mapping={'az1742-2018.pdf':'Solar Photovoltic (PV) System Components.pdf',
+                          '6981.pdf':"Photovoltics: Basic Design Princicals and Components.pdf",
+                          'BOOK3.pdf':"Solar Photovoltics Technology and Systems.pdf"
+                          }
+    reverse_mapping={v:k for k,v in pdf_name_mapping.items()}
+    if filename in reverse_mapping:
+        filename=reverse_mapping[filename]
+    file_path=os.path.join(STORAGE_DRIVE,filename)
+    return FileResponse(path=file_path, filename=file_path, media_type='text/pdf')

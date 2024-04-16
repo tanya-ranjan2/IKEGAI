@@ -22,7 +22,8 @@ def rag(query:str,topk:int=3,**kwargs)->list:
     documents=db.invoke(query)
     reference=[i.metadata for i in documents]
     agent_state.state['sources']=reference
-    
+    #agent_state.state['context']=rag_utils.make_context(documents)
+    print(rag_utils.make_context(documents))
     return rag_utils.make_context(documents)
     #return "Search VectorDB"
     
