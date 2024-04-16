@@ -21,6 +21,12 @@ arxiv = "^2.1.0"
 youtube-search = "^2.1.2"
 stackapi = "^0.3.0"
 langchain-experimental = "0.0.50"
+celery = "^5.3.6"
+redis = "^5.0.3"
+pymongo = "^4.6.3"
+pymupdf = "^1.24.1"
+azure-ai-formrecognizer = "^3.3.3"
+python-multipart = "^0.0.9"
 
 
 [build-system]

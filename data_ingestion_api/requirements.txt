@@ -1,9 +1,0 @@
-celery
-celery[redis]
-PyPDF2
-chromadb
-langchain_community
-langchain
-sentence-transformers
-python-multipart
-sqlalchemy
