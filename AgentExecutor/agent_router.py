@@ -39,10 +39,10 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
                 return res.json()
             else:
                 return {"status":404}
-            
-    if agent_info.session_id in session.sessions:
-        agent=session.sessions[agent_info.session_id]['obj']
-        if session.sessions[agent_info.session_id]['type']=='agent':
+    uuids=agent_info.session_id+agent_info.uid
+    if uuids in session.sessions:
+        agent=session.sessions[uuids]['obj']
+        if session.sessions[uuids]['type']=='agent':
             out,metadata,followup=agent._execute_agent(agent_info.query)
         else:
             out,metadata,followup=agent.run(agent_info.query)
@@ -51,7 +51,7 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
         agents=helper.create_agents(config_data)
         if len(agents)==1:
             agent=helper.create_agents(config_data)[0]
-            session.sessions[agent_info.session_id]={
+            session.sessions[uuids]={
                 "type":'agent',
                 "obj":agent
             }
@@ -59,7 +59,7 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
             
         else:
             agent_crew=crew.Crew(agents=agents,llm=llm,)
-            session.sessions[agent_info.session_id]={
+            session.sessions[uuids]={
                 "type":'crew',
                 "obj":agent_crew
             }
