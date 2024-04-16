@@ -1,8 +1,8 @@
-from langchain.pydantic_v1 import BaseModel, Field
+from langchain.pydantic_v1 import BaseModel, Field,Extra
 
 
 
-class SQLGeneratorTool(BaseModel):
+class SQLGeneratorTool(BaseModel, extra=Extra.allow):
     query: str = Field(description="original `user input`")
     
     

@@ -1,0 +1,36 @@
+###sqlite tables, with their properties:      
+#   
+# Results_u(analysis_id,order_number,company_code, order_line_number, purchasing_order_date, po_description, material_number, vendor_number, plant_name, cost_centre, purchase_order_quantity, unit_of_measure, unit_price, unit_price_quantity, total_order_value, purchasing_document_category, spot_buy,category_id, min_price, avg_price, market_price, variance_min, variance_avg, variance_market, category_l1, category_l2, category_l3)
+### Description for the some columns are:
+#
+The Results_u table contains information on procurement orders placed by a company. Here are some common columns you might find in this table:
+
+Analysis ID [analysis_id]: This column specifies the unique identifier for the analysis performed on the procurement order.
+Order number[order_number] and order line number [order_line_number]: These columns are used together as a composite primary key to uniquely identify each procurement order and its associated line items.
+Company code [company_code]: This column specifies the unique code for the company placing the procurement order.
+Purchasing order date [purchasing_order_date]: This column indicates the date on which the procurement order was placed.
+PO description [po_description]: This column provides a description of the procurement order.
+Material number [material_number]: This column specifies the unique identifier for the material being procured.
+Vendor number [vendor_number]: This column specifies the unique identifier for the vendor supplying the material.
+Plant name [plant_name]: This column specifies the plant from which the material will be sourced.
+Cost centre [cost_centre]: This column specifies the cost centre responsible for the procurement order.
+Purchase order quantity [purchase_order_quantity]: This column specifies the quantity of the item being procured, such as the number of units, kilograms, or liters.
+Unit of measure [unit_of_measure]: This column specifies the unit of measure for the item being procured, such as kilograms, liters, or units.
+Unit price [unit_price]: This column specifies the price of a single unit of the item being procured, such as the cost per unit, cost per kilogram, or cost per liter.
+Unit price quantity[unit_price_quantity]: This column specifies the quantity for which the unit price is specified.
+Total order value [total_order_value]: This column specifies the total cost or the spend amount of the item, which is calculated by multiplying the quantity by the unit price.
+Purchasing document category[purchasing_document_category]: This column specifies the category of the purchasing document, such as goods receipt or invoice receipt.
+Spot buy[spot_buy]: This column specifies whether the procurement order was a spot buy or not.
+Category ID[category_id]: This column specifies the category to which the item belongs.
+Min price [min_price]: This column specifies the minimum price at which the item was procured.
+Avg price[avg_price]: This column specifies the average price at which the item was procured.
+Market price [market_price]: This column specifies the market price for the item being procured.
+Variance min [variance_min], and Variance market[variance_market]: These columns specify the variance between the minimum, and market prices and the actual price paid for the item.
+Average Variance [variance_avg] = This column specify average price variance between actual price for the item
+Category L1[category_l1], Category L2[category_l2], and Category L3[category_l3]: These columns specify the hierarchical category structure for the item being procured. 
+                These categories are used to identify the category to which the item belongs and its spend. 
+                Category l1 is the category at the level 1. Category l2 is the category at level 2 and category l3 is the category at level 3.
+                When particular category is asked it should check for either it is there in any of these 3 column category_l1, category_l2, category_l3.
+
+These are some common columns you might find in the published_purchase_order_v2 table, and their descriptions.
+
