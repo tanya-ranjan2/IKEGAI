@@ -20,7 +20,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(agent_router.router)
-app.include_router(data_ingestion_router.router)
+#app.include_router(data_ingestion_router.router)
 
 @app.get("/")
 def index():

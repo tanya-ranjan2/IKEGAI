@@ -2,11 +2,19 @@ from fastapi import APIRouter
 from AgentExecutor.schema import agent_schema
 from AgentExecutor.src import agents,crew
 from AgentExecutor.utils import helper,sessions
+from fastapi import FastAPI, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+
+from fastapi.responses import FileResponse
 import requests
+import json
+import os
 
 #<CODEBLOCk>
-import json
 from utils import parser,llmops,APIconnector
+from celery_queue import uploadpdf
+
+from _temp.config import STORAGE_DRIVE
 
 #<CODEBLOCk>
 router=APIRouter(prefix='/agent',tags=["agent_execution"])
@@ -67,3 +75,13 @@ def execute(agent_info:agent_schema.AgentExecute):
     agent_crew=crew.Crew(agents=agents_all,llm=llm,)
     out,metadata=agent_crew.run(agent_info.query)
     return {"output":out,"metadata":metadata}
+
+
+@router.post("/uploadfile/{idx}")
+async def create_upload_file(file: UploadFile,idx:str):
+    
+    contents = file.file.read()
+    with open(os.path.join(STORAGE_DRIVE,file.filename), 'wb') as f:
+        f.write(contents)
+    uploadpdf.delay(idx,os.path.join(STORAGE_DRIVE,file.filename))
+    return {"filename": file.filename}
