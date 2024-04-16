@@ -20,6 +20,7 @@ yfinance = "^0.2.37"
 arxiv = "^2.1.0"
 youtube-search = "^2.1.2"
 stackapi = "^0.3.0"
+langchain-experimental = "0.0.50"
 
 
 [build-system]

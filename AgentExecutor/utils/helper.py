@@ -4,7 +4,7 @@ from AgentExecutor.src import agents,crew
 #IMPORT ALL TOOLS HERE
 from Tools.src.rag.rag_tools import rag,kg_rag
 from Tools.src.structured_tools.sql_tools import sql_generator,sql_executor
-from Tools.src.community_tools.com_tool import DuckDuckGo, WikiPedia,YouTubeSearch,Arxiv
+from Tools.src.community_tools.com_tool import DuckDuckGo, WikiPedia,YouTubeSearch,Arxiv,PythonRepl,StackExchange
 
 from utils.llmops import llmbuilder
 
@@ -13,9 +13,11 @@ def create_agents(config):
     llm=llmbuilder("azureopenai")
     all_agents=[]
     for agent_detail in agent_details:
-        out_prompt=f'''
-        - Give the responce in a {agent_detail['output_prompt']['tone']} tone
-        '''
+        out_prompt=None
+        if agent_detail['output_prompt']!='string':
+            out_prompt=f'''
+            - Give the responce in a {agent_detail['output_prompt']['tone']} tone
+            '''
         _agent_= agents.Agent(
             role=agent_detail['role'],
             desc=agent_detail['desc'],

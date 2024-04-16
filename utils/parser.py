@@ -20,8 +20,8 @@ def get_agent_details(json_data:dict)->dict:
             "name":name,
             "role":prompt_manager[name]['role'],
             "desc":prompt_manager[name]['base_prompt'],
-            "instruction_prompt": prompt_manager[name]['instruction_prompt'],
-            "output_prompt": prompt_manager[name]['output_prompt'],
+            "instruction_prompt":prompt_manager[name]['instruction_prompt'] if 'instruction_prompt' in prompt_manager[name] else 'string',
+            "output_prompt": prompt_manager[name]['output_prompt'] if 'output_prompt' in prompt_manager[name] else 'string',
             "func_config":func_config,
             "tools":get_tools(agent['tools'])
         })
