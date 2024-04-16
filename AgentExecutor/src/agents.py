@@ -70,9 +70,9 @@ class Agent:
         prompt=f'''Given the conversation Can you recommend 3 follow up questions. Use only the information from the conversation.
         Note: Give the output in the format, Dont add anything extra
         
-        1. Follow up question 1
-        2. Follow up question 2
-        3. Follow up question 3
+        1. 
+        2. 
+        3. 
         '''
         chat_prompt=ChatPromptTemplate.from_messages(
             [
