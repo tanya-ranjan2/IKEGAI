@@ -17,7 +17,10 @@ mongo=mongo_utils.MongoConnect(uri=usecase.uri,db=usecase.db,collection=usecase.
 
 @app.task
 def uploadpdf(uid,file_path):
+    
     vectorizer.convert_to_vector(file_path,uid)
+    
+    print("UID",uid)
     mongo.update_data_by_id(uid,{'data_sources':{
         "storage_name":PERSISTANT_DRIVE,
         "collection_name":uid
