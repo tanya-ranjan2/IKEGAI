@@ -1,0 +1,29 @@
+{
+    "usecase_id": "US123",
+    "usecase_name": "FinePrint",
+    "usecase_desc":"",
+    "config_manager": {
+        "agents": [  
+            {
+                "name" : "Forecaster", 
+                "tools" : [
+                    {
+                        "name" : "extract_keywords", 
+                        "args" : {
+                            "default_days": 5, 
+                            "db_path" : "database/sample_data.sqlite3"
+                        }, 
+                        "isSpecial" : false
+                    }
+                ]
+            }
+        ]
+    },
+    "prompt_manager":{ 
+        "Forecaster" : {
+            "role" : "Data Analyst/Time Series Forecaster", 
+            "desc" : "You are going to analysis data and do the forecasting. You Should run extract_keywords tool to get the data from database and then use forecast_using_prophet to return the forecasted data. \nUse all the tools required without asking the user. \nNOTE: DON'T change the user_input and pass it as it is",
+            "tools" : []
+        }
+    }
+}
