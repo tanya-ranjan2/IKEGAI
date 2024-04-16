@@ -43,6 +43,7 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
     if uuids in session.sessions:
         agent=session.sessions[uuids]['obj']
         if session.sessions[uuids]['type']=='agent':
+            print("Running Agent...",agent.chat_history)
             out,metadata,followup=agent._execute_agent(agent_info.query)
         else:
             out,metadata,followup=agent.run(agent_info.query)
