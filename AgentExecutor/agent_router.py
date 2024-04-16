@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from AgentExecutor.schema import agent_schema
 from AgentExecutor.src import agents,crew
-from AgentExecutor.utils import helper
+from AgentExecutor.utils import helper,sessions
 import requests
 
 #<CODEBLOCk>
@@ -11,7 +11,7 @@ from utils import parser,llmops,APIconnector
 #<CODEBLOCk>
 router=APIRouter(prefix='/agent',tags=["agent_execution"])
 
-
+session=sessions.SessionData()
 
 
 @router.get("/get_details/{uid}")
@@ -22,7 +22,7 @@ def get_agent_details(uid):
 @router.post("/execute_agent/")
 def execute_agent(agent_info:agent_schema.AgentExecute):
     config_data=APIconnector.get_usecase_details(agent_info.uid)
-    print("CONFIG",config_data)
+    #print("CONFIG",config_data)
     if 'is_direct_api' in config_data and 'api_url' in config_data:
         #print("API_URL",config_data['api_url'])
         if config_data['is_direct_api']:
@@ -31,15 +31,31 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
                 return res.json()
             else:
                 return {"status":404}
-    llm=llmops.llmbuilder("azureopenai")
-    agents=helper.create_agents(config_data)
-    if len(agents)==1:
-        agent=helper.create_agents(config_data)[0]
-        out,metadata,followup=agent._execute_agent(agent_info.query)
-        
+            
+    if agent_info.session_id in session.sessions:
+        agent=session.sessions[agent_info.session_id]['obj']
+        if session.sessions[agent_info.session_id]['type']=='agent':
+            out,metadata,followup=agent._execute_agent(agent_info.query)
+        else:
+            out,metadata,followup=agent.run(agent_info.query)
     else:
-        agent_crew=crew.Crew(agents=agents,llm=llm,)
-        out,metadata,followup=agent_crew.run(agent_info.query)
+        llm=llmops.llmbuilder("azureopenai")
+        agents=helper.create_agents(config_data)
+        if len(agents)==1:
+            agent=helper.create_agents(config_data)[0]
+            session.sessions[agent_info.session_id]={
+                "type":'agent',
+                "obj":agent
+            }
+            out,metadata,followup=agent._execute_agent(agent_info.query)
+            
+        else:
+            agent_crew=crew.Crew(agents=agents,llm=llm,)
+            session.sessions[agent_info.session_id]={
+                "type":'crew',
+                "obj":agent_crew
+            }
+            out,metadata,followup=agent_crew.run(agent_info.query)
     return {"output":out,"metadata":metadata,"followup":followup}
 
 
