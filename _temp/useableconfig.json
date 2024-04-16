@@ -1,0 +1,100 @@
+{
+    "id": "TEST123",
+    "config_manager": {
+        "llm_params": {
+            "llm_type": "commercial",
+            "llm_name": "AzureOpenAI",
+            "model_version": "2024-02-15-preview"
+        },
+        "agents": [
+            {
+                "agent_id": "A1",
+                "name": "DocumentAgent",
+                "run_parallel": false,
+                "tools": [
+                    {
+                        "tool_id": "T1",
+                        "tool_name": "rag",
+                        "tool_desc": "This is Rag",
+                        "fields": [],
+                        "prompt": {
+                            "role": "string",
+                            "base_prompt": "string",
+                            "instruction_prompt": "string",
+                            "output_prompt": {
+                                "tone": "friendly",
+                                "rules": "string",
+                                "verification_criteria": "string"
+                            }
+                        },
+                        "isSpecial": false,
+                        "additionalProp1": {}
+                    }
+                ]
+            },
+            {
+                "agent_id": "A2",
+                "name": "Insights",
+                "run_parallel": false,
+                "tools": [
+                    {
+                        "tool_id": "T2",
+                        "tool_name": "sql_generator",
+                        "tool_desc": "This is Rag",
+                        "fields": [],
+                        "prompt": {
+                            "role": "string",
+                            "base_prompt": "string",
+                            "instruction_prompt": "string",
+                            "output_prompt": {
+                                "tone": "friendly",
+                                "rules": "string",
+                                "verification_criteria": "string"
+                            }
+                        },
+                        "isSpecial": false,
+                        "additionalProp1": {}
+                    }
+                ]
+            }
+        ]
+    },
+    "data_sources": {
+        "storage_name": "test_pdf",
+        "collection_name": "test_pdf",
+        "db_type":"sqlite",
+        "db_path":"sqlite:///usecases/Spend-Analytics-Platform/db/Spend-Analytics-Platform.db",
+        "db_def_path":"usecases/Spend-Analytics-Platform/defination/spend_analytics.txt"
+    },
+    "usecase_info": {
+        "name": "Test Architecture",
+        "desc": "This is a test Architecture",
+        "func": "string",
+        "logo": "string",
+        "publish": "public",
+        "stage": "string"
+    },
+    "prompt_manager": {
+        "DocumentAgent": {
+            "role": "librarian",
+            "base_prompt": "You search documents for answers and give the answers, always use the tools to search documents.\n Use all the tools required without asking the user.\n Use all possible search tools and finally merge the serch results to respond.\n Do not Change the `user input` for the for the search tools.",
+            "instruction_prompt": "string",
+            "output_prompt": {
+                "tone": "friendly",
+                "rules": "string",
+                "verification_criteria": "string"
+            }
+        },
+        "Insights":{
+            "role": "Extract information from your structured datasets",
+            "base_prompt": "Your work is to direct `user query` to the provided tools.\nUse all attached tools and finally merge the serch results to respond.\nDo not change the `user query`., always pass the original query to tools.\nDo not Change the `user input` for the for the search tools.",
+            "instruction_prompt": "string",
+            "output_prompt": {
+                "tone": "friendly",
+                "rules": "string",
+                "verification_criteria": "string"
+            }
+        }
+        
+    }
+}

@@ -33,13 +33,13 @@ def forecast_using_prophet_utils(filter_data: list[tuple], feature_parameters: d
 
         print(forecast_df.tail())
 
-        fig = px.line(
-                forecast_df, x ='date', y = feature_parameters['feature'], 
-                title = 'Time Series with Rangeslider', markers = True
-            )
+        #fig = px.line(
+        #        forecast_df, x ='date', y = feature_parameters['feature'], 
+        #        title = 'Time Series with Rangeslider', markers = True
+        #    )
 
-        fig.update_xaxes(rangeslider_visible=True)
-        fig.write_html("plots/new_file.html")
+        #fig.update_xaxes(rangeslider_visible=True)
+        #fig.write_html("plots/new_file.html")
 
 
         # if mongo_store : 
