@@ -48,6 +48,7 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
         else:
             out,metadata,followup=agent.run(agent_info.query)
     else:
+        print("---------Builder--------")
         llm=llmops.llmbuilder("azureopenai")
         agents=helper.create_agents(config_data)
         if len(agents)==1:
