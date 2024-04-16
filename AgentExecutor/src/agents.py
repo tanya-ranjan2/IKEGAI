@@ -132,6 +132,7 @@ class Agent:
         )
         return chat_prompt
     
+    
     def _create_prompt_history_(self,system_prompt:str):
         """Create a conversational Prompt History
 
@@ -159,7 +160,7 @@ class Agent:
         """
         out=self.chain.invoke(
                 {
-                    "messages": chat_history.messages[:-5],
+                    "messages": chat_history.messages,
                 }
             )
         if 'token_usage' in out.response_metadata:
@@ -193,7 +194,7 @@ class Agent:
         """
         out=self.followup_chain.invoke(
                 {
-                    "messages": chat_history.messages[:-5],
+                    "messages": chat_history.messages,
                 }
             )
         if 'token_usage' in out.response_metadata:
