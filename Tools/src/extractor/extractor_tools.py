@@ -31,8 +31,8 @@ def extract_keywords(user_query: str, default_days: int = 5, db_path: str = "dat
 
     table_creation, chart_creation, chart_config = forecast_using_prophet_utils(filter_data, final_result)
 
-    agent_state.state['table'] = table_creation
+    agent_state.state['table'] = table_creation.to_dict(orient="tight")
     agent_state.state['data'] = chart_creation
     agent_state.state['chart_config'] = chart_config
-
-    return table_creation
+    print(table_creation.tail().to_markdown())
+    return table_creation.tail().to_markdown()

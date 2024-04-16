@@ -40,7 +40,7 @@ def forecast_using_prophet_utils(filter_data: list[tuple], feature_parameters: d
         # fig.update_xaxes(rangeslider_visible=True)
         # fig.write_html("plots/new_file.html")
 
-        table_creation = forecast_df.to_dict(orient="tight")
+        table_creation = forecast_df#.to_dict(orient="tight")
         chart_creation = forecast_df.to_dict()
         chart_config = {
             "type": "line",  

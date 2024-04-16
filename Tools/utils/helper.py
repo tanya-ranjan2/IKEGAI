@@ -9,7 +9,7 @@ def clean_desc(desc):
     return desc[desc.index("-")+1:]
 
 def arg_to_fields(params,sig_def,required):
-    mapping={'string':"text","integer":"number"}
+    mapping={'string':"text","integer":"number","boolean": "checkbox"}
     
     pp_list=[]
     for p in params:
