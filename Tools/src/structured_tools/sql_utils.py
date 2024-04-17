@@ -268,6 +268,7 @@ class PromptMaker:
             chart_config = self.get_charts_from_model_response(model_resp.content)
             tabular_answer = self.execute_query(sql_query, use_pandas=True)
             print(tabular_answer)
+            tabular_answer=tabular_answer.dropna()
             if self.form_answer_flag & len(tabular_answer) > 16000:
                 answer = tabular_answer
             else:
