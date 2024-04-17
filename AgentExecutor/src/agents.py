@@ -43,6 +43,9 @@ class Agent:
         self.system_prompt=self._init_system_prompt_(role,desc)
         self.prompt=self._create_prompt_history_(self.system_prompt)
         self.chat_history = ChatMessageHistory()
+        # Have a stored History with only important query-->final response
+        self.memory=ChatMessageHistory()
+        
         #comment Chain
         self.local_chat_history=self._set_local_history_()
         self.comment_prompt=self.__init__local_chat(self.instruct_promt,self.output_prompt)
@@ -57,7 +60,8 @@ class Agent:
         self.config=config
         self.state_dict=StateDict()
         self.state_dict.state={}
-        self.state_dict.config.update(state)
+        self.state_config=state
+        self.state_dict.config.update(self.state_config)
         # Tokens
         
         self.tokens={'completion_tokens': 0, 'prompt_tokens': 0, 'total_tokens': 0}
@@ -234,8 +238,20 @@ class Agent:
         #print(f"===TOOL OUTPUT===={tool_output}=========")
         return tool,tool_output
     
+    def _reset_state_(self):
+        self.state_dict=StateDict()
+        self.state_dict.config.update(self.state_config)
+        
+    def _reset_chat_history_(self,query,responce):
+        self.memory.add_user_message(query)
+        self.memory.add_message(responce)
+        self.chat_history=self.memory
+        
+        
     def _execute_agent(self,query):
+        self._reset_state_()
         self._set_local_history_()
+        
         if len(self.tools)==0:
             raise Exception("No tools were added to the the Agent!! Please add tools to continue")
         # For Parallel and Sequencial Runs
@@ -293,5 +309,8 @@ class Agent:
         followup=self._invoke_followup_agent_(self.local_chat_history)
         followup=followup.content.split('\n')
         self.state_dict.state['Tokens']=self.tokens
+        
+        #reset Chat History
+        self._reset_chat_history_(query,out)
         return out.content,self.state_dict.state,followup
         
