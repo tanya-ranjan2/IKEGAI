@@ -82,6 +82,8 @@ class Crew:
         return tool,out
         
     def run(self,query):
+        self.metadata={}
+        self.followup=[]
         self.chat_history.add_user_message(query)
         out=self._invoke_agent_()
         self.chat_history.add_message(out)

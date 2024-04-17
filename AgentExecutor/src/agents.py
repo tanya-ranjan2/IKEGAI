@@ -111,6 +111,8 @@ class Agent:
         Since the functions may be executed in a sequential manner, you do not need to ask for confirmation on proceeding.
         Assume user intends to execute all the functions needed to answer the query.
         
+        Note: If you don't know the answer, or answer is not in the conversation, Run the tools to get the answer
+        
         Your user facing role here is :{role}
         Your user facing job is: {desc}
         '''
@@ -261,15 +263,17 @@ class Agent:
         
         
         self.chat_history.add_user_message(query)
+        print(self.chat_history)
         self.local_chat_history.add_user_message(query)
         
         out=self._invoke_agent_(self.chat_history)
         
         self.chat_history.add_message(out)
         self.local_chat_history.add_message(out)
-        
+       
         #last_stable_output=out.content
         while "function_call" in out.additional_kwargs:
+            print("Enter tool call")
             if "function_call" in out.additional_kwargs:
                 tool_name=out.additional_kwargs['function_call']['name']
                 if tool_name==self.tool_calls:
@@ -289,6 +293,7 @@ class Agent:
                 self.tool_calls=tool_name
                 #last_stable_output=tool_output
             #check if more info is required
+            enter_tool_calls=True
             self.chat_history.add_user_message("Is there any other tool that can be used for the task? Answer only in 'yes' or 'no'")
             out=self._invoke_agent_(self.chat_history)
             self.chat_history.add_message(out)
@@ -298,7 +303,8 @@ class Agent:
                 
                 self.chat_history.add_message(out)
                 self.local_chat_history.add_message(out)
-                
+        
+        
         if self.execution_type=="parallel":
             context="\n".join([ k+": "+inter for k,inter in self.intermediatory_steps.items()])
             self.local_chat_history.add_ai_message(context)
@@ -312,5 +318,6 @@ class Agent:
         
         #reset Chat History
         self._reset_chat_history_(query,out)
+        self.tool_calls=""
         return out.content,self.state_dict.state,followup
         
