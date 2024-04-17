@@ -21,7 +21,9 @@ def rag(query:str,topk:int=3,**kwargs)->list:
     
     documents=db.invoke(query)
     reference=[i.metadata for i in documents]
-    agent_state.state['sources']=reference
+    info_list=[{"page":m['page'],"path":m["path"].split("/")[-1]} for m in reference]
+
+    agent_state.state['sources']=info_list
     #agent_state.state['context']=rag_utils.make_context(documents)
     print(rag_utils.make_context(documents))
     return rag_utils.make_context(documents)
