@@ -181,6 +181,7 @@ class Agent:
         Returns:
             Message: Output of the LLM Model
         """
+        print(chat_history.messages)
         out=self.comment_chain.invoke(
                 {
                     "messages": chat_history.messages,
