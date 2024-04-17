@@ -21,6 +21,24 @@ def extract_keywords(user_query: str, default_days: int = 5, db_path: str = "dat
     extracted_feature = extract_feature_keywords_for_sql_query(user_query = user_query) 
     extracted_date = extract_date_keywords(user_query = user_query, default_days = default_days)
 
+    # print(extracted_feature, type(extracted_feature))
+
+    restricted_entity, new_filter = {"month", "year", "week", "quarter", "fortnight", "day", "date"}, []
+    for val in extracted_feature["filter"] : 
+        flag = True
+        for entity in restricted_entity : 
+            for v in val : 
+                if entity in v :
+                    flag = False 
+
+        if flag : 
+            new_filter.append(val)
+
+    extracted_feature = {
+        "feature" : extracted_feature["feature"], 
+        "filter" : new_filter
+    }
+
     final_result = {**extracted_feature, **extracted_date}
 
     print(final_result)
@@ -31,6 +49,7 @@ def extract_keywords(user_query: str, default_days: int = 5, db_path: str = "dat
 
     table_creation, chart_creation, chart_config = forecast_using_prophet_utils(filter_data, final_result)
 
+    print("table creation --> ", table_creation.to_dict(orient="tight"))
     agent_state.state['table'] = table_creation.to_dict(orient="tight")
     agent_state.state['data'] = chart_creation
     agent_state.state['chart_config'] = chart_config
