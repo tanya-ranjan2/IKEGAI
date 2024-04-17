@@ -80,10 +80,11 @@ def execute(agent_info:agent_schema.AgentExecute):
 
 
 @router.post("/uploadfile/{idx}")
-async def create_upload_file(file: UploadFile,idx:str):
-    
-    contents = file.file.read()
-    with open(os.path.join(STORAGE_DRIVE,file.filename), 'wb') as f:
-        f.write(contents)
-    uploadpdf.delay(idx,os.path.join(STORAGE_DRIVE,file.filename))
-    return {"filename": file.filename}
+def create_upload_file(file: UploadFile,idx:str):
+    files=[f for f in file]
+    for file in files:
+        contents = file.file.read()
+        with open(os.path.join(STORAGE_DRIVE,file.filename), 'wb') as f:
+            f.write(contents)
+        uploadpdf.delay(idx,os.path.join(STORAGE_DRIVE,file.filename))
+    return {"filename": [f.filename for f in files]}
