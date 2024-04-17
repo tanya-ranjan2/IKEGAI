@@ -242,6 +242,7 @@ class Agent:
     
     def _reset_state_(self):
         self.state_dict=StateDict()
+        self.state_dict.state={}
         self.state_dict.config.update(self.state_config)
         
     def _reset_chat_history_(self,query,responce):
@@ -293,7 +294,7 @@ class Agent:
                 self.tool_calls=tool_name
                 #last_stable_output=tool_output
             #check if more info is required
-            enter_tool_calls=True
+            
             self.chat_history.add_user_message("Is there any other tool that can be used for the task? Answer only in 'yes' or 'no'")
             out=self._invoke_agent_(self.chat_history)
             self.chat_history.add_message(out)
@@ -317,7 +318,7 @@ class Agent:
         self.state_dict.state['Tokens']=self.tokens
         
         #reset Chat History
-        self._reset_chat_history_(query,out)
+        #self._reset_chat_history_(query,out)
         self.tool_calls=""
         return out.content,self.state_dict.state,followup
         
