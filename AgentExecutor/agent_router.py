@@ -80,7 +80,7 @@ def execute(agent_info:agent_schema.AgentExecute):
 
 
 @router.post("/uploadfile/{idx}")
-def create_upload_file(file: UploadFile,idx:str):
+def create_upload_file(file: list[UploadFile],idx:str):
     files=[f for f in file]
     for file in files:
         contents = file.file.read()
