@@ -4,11 +4,11 @@ from langchain_community.vectorstores import Chroma
 from _temp.config import ChromaClient
 from dataclasses import dataclass,asdict
 
-
+'''
 __import__('pysqlite3')
 import sys
 sys.modules['sqlite3']= sys.modules.pop('pysqlite3')
-
+'''
 
 import chromadb
 from chromadb.config import Settings
