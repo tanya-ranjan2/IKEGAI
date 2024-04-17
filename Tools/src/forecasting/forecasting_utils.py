@@ -38,6 +38,7 @@ def forecast_using_prophet_utils(filter_data: list[tuple], feature_parameters: d
         if feature_parameters["forecasting_date_type"] == "year" or feature_parameters["forecasting_date_type"] == "years": 
             forecast_df = forecast_df.groupby(pd.Grouper(key="date", freq="Y")).sum()
         print("after modify --> ", forecast_df)
+        forecast_df.reset_index(inplace=True)
 
         table_creation = forecast_df 
         chart_creation = forecast_df.to_dict()
