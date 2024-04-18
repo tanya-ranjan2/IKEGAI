@@ -5,12 +5,12 @@ from dataclasses import asdict
 from DataIngestion.utils import pdf_utils,model_utils,mongo_utils
 from _temp.config import CeleryQueue,RedisBroker,AzureDocumentInfo,EMBEDDING,UseCaseMongo,PERSISTANT_DRIVE
 
-redis = Redis(**asdict(RedisBroker()))
-redis.flushall()
-redis.flushdb()
+#redis = Redis(**asdict(RedisBroker()))
+#redis.flushall()
+#redis.flushdb()
 
-#BrokerUrl='pyamqp://guest@localhost//'
-app = Celery(**asdict(CeleryQueue()))
+BrokerUrl='pyamqp://guest:guest@20.41.249.147//'
+app = Celery(name='celery_queue',broker=BrokerUrl)
 
 
 azure_form= model_utils.AzureDocIntell(**asdict(AzureDocumentInfo()))
@@ -29,3 +29,4 @@ def uploadpdf(uid,file_path):
         "collection_name":uid
         
     }})
+    print("Updated:::",uid)
