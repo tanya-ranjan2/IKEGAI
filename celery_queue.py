@@ -10,8 +10,15 @@ from celery.utils.log import get_task_logger
 import logging
  
 # Create and configure logger
-logger = get_task_logger(__name__)
-
+logging.basicConfig(filename="Celery.log",
+                    format='%(asctime)s %(message)s',
+                    filemode='a')
+ 
+# Creating an object
+logger = logging.getLogger()
+ 
+# Setting the threshold of logger to DEBUG
+logger.setLevel(logging.INFO)
 
 redis = Redis(**asdict(RedisBroker()))
 redis.flushall()
