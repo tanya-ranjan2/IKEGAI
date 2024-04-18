@@ -1,0 +1,8 @@
+version: '1'
+services:
+  web:
+    build: .
+    ports:
+      - "6069:6069"
+    volumes:
+      - .:/app
