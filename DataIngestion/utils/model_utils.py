@@ -50,7 +50,7 @@ class ConvertToVector:
             docs=pdf_utils.process(path)
         
         document_format=pdf_utils.convert_to_langchain_docs(docs)    
-        #print(document_format)    
+        print(document_format)    
         vdb=Chroma(embedding_function=self.embeddings,persist_directory=PERSISTANT_DRIVE,client=self.client,collection_name=store_name)
         vdb=vdb.from_documents(document_format,embedding=self.embeddings,persist_directory=PERSISTANT_DRIVE,collection_name=store_name,client=self.client)    
         vdb.persist()

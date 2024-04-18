@@ -5,6 +5,19 @@ from dataclasses import asdict
 from DataIngestion.utils import pdf_utils,model_utils,mongo_utils
 from _temp.config import CeleryQueue,RedisBroker,AzureDocumentInfo,EMBEDDING,UseCaseMongo,PERSISTANT_DRIVE
 
+import logging
+ 
+# Create and configure logger
+logging.basicConfig(filename="Celery.log",
+                    format='%(asctime)s %(message)s',
+                    filemode='a')
+ 
+# Creating an object
+logger = logging.getLogger()
+ 
+# Setting the threshold of logger to DEBUG
+logger.setLevel(logging.DEBUG)
+
 redis = Redis(**asdict(RedisBroker()))
 redis.flushall()
 redis.flushdb()
@@ -20,13 +33,13 @@ usecase=UseCaseMongo()
 @app.task
 def uploadpdf(uid,file_path):
     mongo=mongo_utils.MongoConnect(uri=usecase.uri,db=usecase.db,collection=usecase.collection)
-    print(f"========Started Consumption of {uid}=========")
+    logger.info(f"========Started Consumption of {uid}=========")
     vectorizer.convert_to_vector(file_path,uid)
-    print(f"=========End Consumption of {uid}=========")
+    logger(f"=========End Consumption of {uid}=========")
     print("UID",uid)
     mongo.update_data_by_id(uid,{'data_sources':{
         "storage_name":PERSISTANT_DRIVE,
         "collection_name":uid
         
     }})
-    print("Updated:::",uid)
+    logger.info(f"Updated:::{uid}")
