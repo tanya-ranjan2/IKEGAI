@@ -32,7 +32,7 @@ class ChromaClient:
 class CeleryQueue:
     name:str='celery_queue'
     broker:str='redis://20.41.249.147:6379/0'
-    backend:str="redis://20.41.249.147:6379/0"
+    backend:str="redis://20.41.249.147:6379/1"
     
     
 @dataclass

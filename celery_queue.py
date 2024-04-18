@@ -8,6 +8,8 @@ from _temp.config import CeleryQueue,RedisBroker,AzureDocumentInfo,EMBEDDING,Use
 redis = Redis(**asdict(RedisBroker()))
 redis.flushall()
 redis.flushdb()
+
+#BrokerUrl='pyamqp://guest@localhost//'
 app = Celery(**asdict(CeleryQueue()))
 
 
