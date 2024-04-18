@@ -16,7 +16,7 @@ logging.basicConfig(filename="Celery.log",
 logger = logging.getLogger()
  
 # Setting the threshold of logger to DEBUG
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 redis = Redis(**asdict(RedisBroker()))
 redis.flushall()
@@ -35,7 +35,7 @@ def uploadpdf(uid,file_path):
     mongo=mongo_utils.MongoConnect(uri=usecase.uri,db=usecase.db,collection=usecase.collection)
     logger.info(f"========Started Consumption of {uid}=========")
     vectorizer.convert_to_vector(file_path,uid)
-    logger(f"=========End Consumption of {uid}=========")
+    logger.info(f"=========End Consumption of {uid}=========")
     print("UID",uid)
     mongo.update_data_by_id(uid,{'data_sources':{
         "storage_name":PERSISTANT_DRIVE,
