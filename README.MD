@@ -1,12 +1,1 @@
-In Any place where `#<CODEBLOCk> ` is present. That code would be replaced with modeified code
-
-```python
-#<CODEBLOCk>
-#<CODEBLOCk>
-```
-
-
-celery RUN
-```python
-celery --app celery_queue worker --loglevel=debug --pool=solo
-```
+docker run -p 6062:8000  -v "$(pwd)"/storage:/chroma/chroma -d chromadb/chroma

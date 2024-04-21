@@ -10,7 +10,7 @@ from celery.utils.log import get_task_logger
 import logging
  
 # Create and configure logger
-logging.basicConfig(filename="Celery.log",
+logging.basicConfig(filename="logs/Celery.log",
                     format='%(asctime)s %(message)s',
                     filemode='a')
  
@@ -27,7 +27,8 @@ redis.flushdb()
 #BrokerUrl='pyamqp://guest:guest@20.41.249.147//'
 #app = Celery(name='celery_queue',broker=BrokerUrl)
 app=Celery(**asdict(CeleryQueue()))
-app.log
+#app = Celery('celery_queue', broker='redis://redis/0', backend='redis://redis/0')
+
 
 azure_form= model_utils.AzureDocIntell(**asdict(AzureDocumentInfo()))
 vectorizer=model_utils.ConvertToVector(EMBEDDING,azure_form)

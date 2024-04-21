@@ -1,0 +1,130 @@
+[2024-04-21 13:26:59,229: WARNING/MainProcess] /usr/local/lib/python3.11/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2024-04-21 13:26:59,397: INFO/MainProcess] Connected to redis://20.41.249.147:6379/0
+[2024-04-21 13:26:59,398: WARNING/MainProcess] /usr/local/lib/python3.11/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2024-04-21 13:26:59,538: INFO/MainProcess] mingle: searching for neighbors
+[2024-04-21 13:27:00,759: INFO/MainProcess] mingle: all alone
+[2024-04-21 13:27:01,132: INFO/MainProcess] celery@cf63d8d17955 ready.
+[2024-04-21 13:28:03,483: INFO/MainProcess] Task celery_queue.uploadpdf[345acd73-7778-408f-92a3-2dc0bb699b22] received
+[2024-04-21 13:28:03,594: INFO/MainProcess] ========Started Consumption of TEST123=========
+[2024-04-21 13:28:12,256: INFO/MainProcess] =========End Consumption of TEST123=========
+[2024-04-21 13:28:12,257: WARNING/MainProcess] UID
+[2024-04-21 13:28:12,257: WARNING/MainProcess]  
+[2024-04-21 13:28:12,258: WARNING/MainProcess] TEST123
+[2024-04-21 13:28:12,507: INFO/MainProcess] Updated:::TEST123
+[2024-04-21 13:28:12,593: INFO/MainProcess] Task celery_queue.uploadpdf[345acd73-7778-408f-92a3-2dc0bb699b22] succeeded in 9.109590295000089s: None
+[2024-04-21 13:28:12,663: INFO/MainProcess] Task celery_queue.uploadpdf[048f38ba-483d-47c5-bd22-6b3a38938abf] received
+[2024-04-21 13:28:12,706: INFO/MainProcess] ========Started Consumption of TEST123=========
+[2024-04-21 13:28:19,323: INFO/MainProcess] =========End Consumption of TEST123=========
+[2024-04-21 13:28:19,324: WARNING/MainProcess] UID
+[2024-04-21 13:28:19,324: WARNING/MainProcess]  
+[2024-04-21 13:28:19,325: WARNING/MainProcess] TEST123
+[2024-04-21 13:28:19,581: INFO/MainProcess] Updated:::TEST123
+[2024-04-21 13:28:19,612: INFO/MainProcess] Task celery_queue.uploadpdf[048f38ba-483d-47c5-bd22-6b3a38938abf] succeeded in 6.946550170000137s: None
+[2024-04-21 13:29:03,705: INFO/MainProcess] Task celery_queue.uploadpdf[67ced3bf-8812-48ab-9fd2-3ecf15bd5b05] received
+[2024-04-21 13:29:03,742: INFO/MainProcess] ========Started Consumption of ABC123=========
+[2024-04-21 13:29:12,030: INFO/MainProcess] =========End Consumption of ABC123=========
+[2024-04-21 13:29:12,032: WARNING/MainProcess] UID
+[2024-04-21 13:29:12,033: WARNING/MainProcess]  
+[2024-04-21 13:29:12,034: WARNING/MainProcess] ABC123
+[2024-04-21 13:29:12,263: INFO/MainProcess] Updated:::ABC123
+[2024-04-21 13:29:12,301: INFO/MainProcess] Task celery_queue.uploadpdf[67ced3bf-8812-48ab-9fd2-3ecf15bd5b05] succeeded in 8.59449550300019s: None
+[2024-04-21 13:29:12,376: INFO/MainProcess] Task celery_queue.uploadpdf[9bfe73ee-e091-4fe8-bd65-04b526974a22] received
+[2024-04-21 13:29:12,422: INFO/MainProcess] ========Started Consumption of ABC123=========
+[2024-04-21 13:29:18,850: INFO/MainProcess] =========End Consumption of ABC123=========
+[2024-04-21 13:29:18,851: WARNING/MainProcess] UID
+[2024-04-21 13:29:18,851: WARNING/MainProcess]  
+[2024-04-21 13:29:18,851: WARNING/MainProcess] ABC123
+[2024-04-21 13:29:19,047: INFO/MainProcess] Updated:::ABC123
+[2024-04-21 13:29:19,077: INFO/MainProcess] Task celery_queue.uploadpdf[9bfe73ee-e091-4fe8-bd65-04b526974a22] succeeded in 6.698803587000157s: None
+[2024-04-21 13:37:20,256: WARNING/MainProcess] consumer: Connection to broker lost. Trying to re-establish the connection...
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 340, in start
+    blueprint.start(self)
+  File "/usr/local/lib/python3.11/site-packages/celery/bootsteps.py", line 116, in start
+    step.start(parent)
+  File "/usr/local/lib/python3.11/site-packages/celery/worker/consumer/consumer.py", line 742, in start
+    c.loop(*c.loop_args())
+  File "/usr/local/lib/python3.11/site-packages/celery/worker/loops.py", line 97, in asynloop
+    next(loop)
+  File "/usr/local/lib/python3.11/site-packages/kombu/asynchronous/hub.py", line 373, in create_loop
+    cb(*cbargs)
+  File "/usr/local/lib/python3.11/site-packages/kombu/transport/redis.py", line 1344, in on_readable
+    self.cycle.on_readable(fileno)
+  File "/usr/local/lib/python3.11/site-packages/kombu/transport/redis.py", line 569, in on_readable
+    chan.handlers[type]()
+  File "/usr/local/lib/python3.11/site-packages/kombu/transport/redis.py", line 913, in _receive
+    ret.append(self._receive_one(c))
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/kombu/transport/redis.py", line 923, in _receive_one
+    response = c.parse_response()
+               ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/redis/client.py", line 835, in parse_response
+    response = self._execute(conn, try_read)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/redis/client.py", line 811, in _execute
+    return conn.retry.call_with_retry(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/redis/retry.py", line 49, in call_with_retry
+    fail(error)
+  File "/usr/local/lib/python3.11/site-packages/redis/client.py", line 813, in <lambda>
+    lambda error: self._disconnect_raise_connect(conn, error),
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/redis/client.py", line 800, in _disconnect_raise_connect
+    raise error
+  File "/usr/local/lib/python3.11/site-packages/redis/retry.py", line 46, in call_with_retry
+    return do()
+           ^^^^
+  File "/usr/local/lib/python3.11/site-packages/redis/client.py", line 812, in <lambda>
+    lambda: command(*args, **kwargs),
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/redis/client.py", line 833, in try_read
+    return conn.read_response(disconnect_on_error=False, push_request=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/redis/connection.py", line 512, in read_response
+    response = self._parser.read_response(disable_decoding=disable_decoding)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/redis/_parsers/resp2.py", line 15, in read_response
+    result = self._read_response(disable_decoding=disable_decoding)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/redis/_parsers/resp2.py", line 25, in _read_response
+    raw = self._buffer.readline()
+          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/redis/_parsers/socket.py", line 115, in readline
+    self._read_from_socket()
+  File "/usr/local/lib/python3.11/site-packages/redis/_parsers/socket.py", line 68, in _read_from_socket
+    raise ConnectionError(SERVER_CLOSED_CONNECTION_ERROR)
+redis.exceptions.ConnectionError: Connection closed by server.
+[2024-04-21 13:37:21,074: WARNING/MainProcess] /usr/local/lib/python3.11/site-packages/celery/worker/consumer/consumer.py:391: CPendingDeprecationWarning: 
+In Celery 5.1 we introduced an optional breaking change which
+on connection loss cancels all currently executed tasks with late acknowledgement enabled.
+These tasks cannot be acknowledged as the connection is gone, and the tasks are automatically redelivered
+back to the queue. You can enable this behavior using the worker_cancel_long_running_tasks_on_connection_loss
+setting. In Celery 5.1 it is set to False by default. The setting will be set to True by default in Celery 6.0.
+
+  warnings.warn(CANCEL_TASKS_BY_DEFAULT, CPendingDeprecationWarning)
+
+[2024-04-21 13:37:21,092: WARNING/MainProcess] /usr/local/lib/python3.11/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2024-04-21 13:37:21,249: INFO/MainProcess] Connected to redis://20.41.249.147:6379/0
+[2024-04-21 13:37:21,254: WARNING/MainProcess] /usr/local/lib/python3.11/site-packages/celery/worker/consumer/consumer.py:507: CPendingDeprecationWarning: The broker_connection_retry configuration setting will no longer determine
+whether broker connection retries are made during startup in Celery 6.0 and above.
+If you wish to retain the existing behavior for retrying connections on startup,
+you should set broker_connection_retry_on_startup to True.
+  warnings.warn(
+
+[2024-04-21 13:37:21,411: INFO/MainProcess] mingle: searching for neighbors
+[2024-04-21 13:37:40,731: INFO/MainProcess] mingle: all alone

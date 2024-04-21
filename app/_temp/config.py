@@ -25,7 +25,10 @@ class AzureDocumentInfo:
 @dataclass
 class ChromaClient:
     host:str="http://20.41.249.147:6062"
-    port:int=8000
+    port:int=6062
+    #host:str="http://20.41.249.147:6062"
+    #host:str="http://localhost:6062"
+    #port:int=6062
 
 
 @dataclass
@@ -38,6 +41,7 @@ class CeleryQueue:
 @dataclass
 class RedisBroker:
     host:str="20.41.249.147"
+    #host:str="127.0.0.1"
     port:int=6379
     username:str="default"
     password:str="admin"
