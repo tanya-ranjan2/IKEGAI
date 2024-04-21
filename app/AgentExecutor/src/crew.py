@@ -8,7 +8,7 @@ from langchain_core.messages import HumanMessage,AIMessage,SystemMessage,Functio
 import json
 
 class Crew:
-    def __init__(self,agents:list,llm,name:str=None,verbose=True):
+    def __init__(self,agents:list,llm,name:str=None,verbose=True,max_conv_history=10,prev_conversation=[]):
         """Create a System of Agents that can autonomously work and solve problems
 
         Args:
@@ -43,7 +43,21 @@ class Crew:
         self.metadata={}
         self.followup=[]
         self.tokens={'completion_tokens': 0, 'prompt_tokens': 0, 'total_tokens': 0}
+        self.max_conv_history=max_conv_history
+        
+        #set previus conversation
+        if len(prev_conversation)>0:
+            for conv in prev_conversation:
+                self.chat_history.add_user_message(conv["user_query"])
+                self.chat_history.add_ai_message(conv["response"])
     
+    def set_previous_conversions(self,prev_conversation):
+        
+        if len(prev_conversation)>0:
+            self.chat_history = ChatMessageHistory()
+            for conv in prev_conversation:
+                self.chat_history.add_user_message(conv["user_query"])
+                self.chat_history.add_ai_message(conv["response"])
     def _create_prompt_history_(self,system_prompt):
         chat_prompt=ChatPromptTemplate.from_messages(
             [
@@ -57,6 +71,14 @@ class Crew:
         return chat_prompt
     
     def _convert_agent_to_tools_(self,agent):
+        """Converts the Agent Classes to OpenAi Tool Types
+
+        Args:
+            agent (Agent): Agent Class
+
+        Returns:
+            _type_: _description_
+        """
         t=StructuredTool.from_function(
             name="".join(agent.role.split()),
             description=agent.desc,
@@ -64,9 +86,14 @@ class Crew:
         )
         return t
     def _invoke_agent_(self):
+        """Invoke LLM for Responce
+
+        Returns:
+            _type_: _description_
+        """
         out=self.chain.invoke(
                 {
-                    "messages": self.chat_history.messages,
+                    "messages": self.chat_history.messages[-self.max_conv_history:],
                 }
             )
         if 'token_usage' in out.response_metadata:
@@ -75,6 +102,15 @@ class Crew:
             self.tokens['total_tokens']=out.response_metadata['token_usage']['total_tokens']
         return out
     def _run_tool(self,function_info,query):
+        """Run the Agents as Directed by LLM
+
+        Args:
+            function_info (dict): infomation for the function , including function name and arguments
+            query (str): User Query
+
+        Returns:
+            _type_: _description_
+        """
         tool=function_info["name"]
         out,metadata,followup=self.agent_info[tool]._execute_agent(query)
         self.metadata.update(metadata)

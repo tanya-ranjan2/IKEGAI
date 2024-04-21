@@ -27,4 +27,33 @@ class MongoConnect:
             return True
         except:
             return False
+
+class MongoIngestionStatus(MongoConnect):
     
+        
+    def set_status(self,status,idx,info):
+        if status=="QUEUED":
+            self.collection.update_one(
+                {"id":idx},
+                {"$addToSet":{"ingestion_status":info}}
+            )
+        elif status=="PROCESSING":
+            self.collection.update_one({"id":idx},{'$set':{
+                    "ingestion_status.$[updateFriend].status" : status,
+                    "ingestion_status.$[updateFriend].start_time" : info['start_time'],
+                    
+                    }},
+                    array_filters=[
+                    {"updateFriend.doc_name" : info["doc_name"]},
+                    ]
+                )
+        elif status=="COMPLETED":
+            self.collection.update_one({"id":idx},{'$set':{
+                    "ingestion_status.$[updateFriend].status" : status,
+                    "ingestion_status.$[updateFriend].end_time" : info['end_time'],
+                    }},
+                    array_filters=[
+                    {"updateFriend.doc_name" : info["doc_name"]},
+                    ]
+                )
+        

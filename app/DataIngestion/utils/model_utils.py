@@ -32,7 +32,7 @@ class ConvertToVector:
     def __init__(self,embeddings,azure_forms) -> None:
         self.embeddings=Embeddings(embeddings).load()
         self.azure_forms=azure_forms
-        self.client = chromadb.HttpClient(**asdict(ChromaClient()))
+        self.client = chromadb.HttpClient(**asdict(ChromaClient()),settings=Settings(allow_reset=True, anonymized_telemetry=False))
 
         
     def convert_to_vector(self,path,store_name):

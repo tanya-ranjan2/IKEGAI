@@ -12,7 +12,7 @@ class StateDict:
 
 
 class Agent:
-    def __init__(self,role:str,desc:str,tools:list,llm,instruct_promt=None,output_prompt=None,state={},config:dict={},verbose:bool=False,execution_type:str="seq") -> None:
+    def __init__(self,role:str,desc:str,tools:list,llm,instruct_promt=None,output_prompt=None,state={},config:dict={},verbose:bool=False,execution_type:str="seq",max_conv_history=10,prev_conversation=[]) -> None:
         """_summary_
 
         Args:
@@ -23,6 +23,8 @@ class Agent:
             config (dict, optional): arguments and default params for the tools. Defaults to {}.
             verbose (bool, optional): if Verbose will be on. Defaults to False.
             execution_type (str, optional): _description_. Defaults to "seq".
+            max_conv_history(int, optional) : Maximum conversation history to retain
+            prev_conversation: set previous conversation context
         """
         self.role=role
         self.verbose=verbose
@@ -65,10 +67,22 @@ class Agent:
         # Tokens
         
         self.tokens={'completion_tokens': 0, 'prompt_tokens': 0, 'total_tokens': 0}
+        self.max_conv_history=max_conv_history
         
         
-    def followup_qa(self):
-        pass
+        #Set Previous Conversatio History
+        if len(prev_conversation)>0:
+            for conv in prev_conversation:
+                self.chat_history.add_user_message(conv["user_query"])
+                self.chat_history.add_ai_message(conv["response"])
+    
+    def set_previous_conversions(self,prev_conversation):
+        
+        if len(prev_conversation)>0:
+            self.chat_history = ChatMessageHistory()
+            for conv in prev_conversation:
+                self.chat_history.add_user_message(conv["user_query"])
+                self.chat_history.add_ai_message(conv["response"])
     
     def _init_followup_(self):
         prompt=f'''Given the conversation Can you recommend 3 follow up questions. Use only the information from the conversation.
@@ -93,8 +107,7 @@ class Agent:
         return ChatMessageHistory()
     def dummy(self,query):
         return query
-    def comment_tool(self):
-        pass
+    
     def _init_system_prompt_(self,role:str,desc:str)->str:
         """Initialize the Prompt
 
@@ -126,7 +139,7 @@ class Agent:
             prompt+=f"\n Here is the Instruction for your Job: {instruct_promt}"
         if output_prompt:
             prompt+=f"\n Note:{output_prompt}"
-        print(prompt)
+        #print(prompt)
         chat_prompt=ChatPromptTemplate.from_messages(
             [
                 (
@@ -166,7 +179,7 @@ class Agent:
         """
         out=self.chain.invoke(
                 {
-                    "messages": chat_history.messages,
+                    "messages": chat_history.messages[-self.max_conv_history:],
                 }
             )
         if 'token_usage' in out.response_metadata:
@@ -181,12 +194,12 @@ class Agent:
         Returns:
             Message: Output of the LLM Model
         """
-        print("----LOCAL------")
+        #print("----LOCAL------")
         #for m in chat_history.messages:
         #    print("OUTPUT",m,m.type)
         out=self.comment_chain.invoke(
                 {
-                    "messages": chat_history.messages,
+                    "messages": chat_history.messages[-self.max_conv_history:],
                 }
             )
         if 'token_usage' in out.response_metadata:
@@ -203,7 +216,7 @@ class Agent:
         """
         out=self.followup_chain.invoke(
                 {
-                    "messages": chat_history.messages,
+                    "messages": chat_history.messages[-self.max_conv_history:],
                 }
             )
         if 'token_usage' in out.response_metadata:
@@ -223,7 +236,14 @@ class Agent:
             json_chat_history.append({str(type(i).__name__):i.to_json()['kwargs']})
         return json_chat_history
     def _run_tool(self,function_info):
-        
+        """Run the Tools As directed by LLM
+
+        Args:
+            function_info (dict): infomation for the function , including function name and arguments
+
+        Returns:
+            _type_: _description_
+        """
         tool=function_info["name"]
         tool_input=json.loads(function_info["arguments"])
         if self.execution_type=="parallel":
@@ -244,11 +264,15 @@ class Agent:
         return tool,tool_output
     
     def _reset_state_(self):
+        """Resets the current State
+        """
         self.state_dict=StateDict()
         self.state_dict.state={}
         self.state_dict.config.update(self.state_config)
         
     def _reset_chat_history_(self,query,responce):
+        """Resets the current ChatHistory
+        """
         self.memory.add_user_message(query)
         self.memory.add_message(responce)
         self.chat_history=self.memory
@@ -267,7 +291,7 @@ class Agent:
         
         
         self.chat_history.add_user_message(query)
-        print(self.chat_history)
+        #print(self.chat_history)
         self.local_chat_history.add_user_message(query)
         
         out=self._invoke_agent_(self.chat_history)
@@ -280,7 +304,7 @@ class Agent:
             print("Enter tool call")
             if "function_call" in out.additional_kwargs:
                 tool_name=out.additional_kwargs['function_call']['name']
-                if tool_name==self.tool_calls:
+                if tool_name==self.tool_calls or tool_name not in self.tools_action:
                     self.chat_history.messages=self.chat_history.messages[:-1]
                     self.local_chat_history.messages=self.local_chat_history.messages[:-1]
                     break

@@ -3,6 +3,9 @@
 
 ### Running an Agent
 
+NOTE:
+`1. Agents have Inbuild Memory so they store converstion`
+
 ```python
 from langchain_openai.chat_models import AzureChatOpenAI
 import json
@@ -147,4 +150,53 @@ agent= agents.Agent(
 print(agent._execute_agent("who is indresh bhattacharya"))
 #print("OUTPUT:",rag_agent._execute_agent("Where does indresh work"))
 
+```
+
+### To Add Coversation History (Only incase you want to do it forcefully)
+
+
+This will reset the Previous conversation and add user defined conversation
+
+NOTE: Only works with `Agents` not `Crew[multiple Agents]`
+
+```python
+from AgentExectutor.src import agents
+
+prev_conversation=[{'user_query':"This is a user query","response":"this is a LLM response"}]
+
+agent=agents.Agent(
+    role='Librarian',
+    desc='''You search documents for answers and give the answers, always use the tools to search documents.
+            Use all the tools required without asking the user.
+           Use all possible search tools and finally merge the serch results to respond.
+            Don't Change the `user input` for the for the search tools.''',
+    llm=llm,
+    tools=[rag,kg_rag,mergetool],
+    config=function_config,
+    verbose=True,
+    prev_conversation=prev_conversation
+)
+```
+
+or 
+
+```python
+from AgentExectutor.src import agents
+
+prev_conversation=[{'user_query':"This is a user query","response":"this is a LLM response"}]
+
+agent=agents.Agent(
+    role='Librarian',
+    desc='''You search documents for answers and give the answers, always use the tools to search documents.
+            Use all the tools required without asking the user.
+           Use all possible search tools and finally merge the serch results to respond.
+            Don't Change the `user input` for the for the search tools.''',
+    llm=llm,
+    tools=[rag,kg_rag,mergetool],
+    config=function_config,
+    verbose=True,
+    
+)
+
+agent.set_previous_conversions(prev_conversation)
 ```

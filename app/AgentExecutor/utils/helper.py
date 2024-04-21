@@ -9,6 +9,14 @@ from Tools.src.extractor.extractor_tools import extract_keywords
 from utils.llmops import llmbuilder
 
 def create_agents(config):
+    """Create the Agents frrom configation
+
+    Args:
+        config (dict): Configation setting
+
+    Returns:
+        _type_: _description_
+    """
     agent_details=parser.get_agent_details(config)
     llm=llmbuilder("azureopenai")
     all_agents=[]

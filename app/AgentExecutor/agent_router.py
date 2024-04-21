@@ -14,13 +14,19 @@ import os
 from utils import parser,llmops,APIconnector
 from celery_queue import uploadpdf
 
-from _temp.config import STORAGE_DRIVE
+from _temp.config import STORAGE_DRIVE,UseCaseMongo
+from DataIngestion.utils import pdf_utils,model_utils,mongo_utils
+
 
 #<CODEBLOCk>
 router=APIRouter(prefix='/agent',tags=["agent_execution"])
 
 session=sessions.SessionData()
 
+usecase=UseCaseMongo()
+
+#mongo=mongo_utils.MongoConnect(uri=usecase.uri,db=usecase.db,collection=usecase.collection)
+mongo=mongo_utils.MongoIngestionStatus(uri=usecase.uri,db=usecase.db,collection=usecase.collection)
 
 @router.get("/get_details/{uid}")
 def get_agent_details(uid):
@@ -86,7 +92,12 @@ def create_upload_file(file: list[UploadFile],idx:str):
         contents = file.file.read()
         with open(os.path.join(STORAGE_DRIVE,file.filename), 'wb') as f:
             f.write(contents)
-        uploadpdf.delay(idx,os.path.join(STORAGE_DRIVE,file.filename))
+        mongo.set_status("QUEUED",idx,{
+            "doc_name":file.filename,
+            "status":"QUEUED",
+            "file_path":os.path.join(STORAGE_DRIVE,file.filename)
+        })
+        uploadpdf.delay(idx,os.path.join(STORAGE_DRIVE,file.filename),file.filename)
     return {"filename": [f.filename for f in files]}
 
 
