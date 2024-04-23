@@ -12,7 +12,7 @@ class StateDict:
 
 
 class Agent:
-    def __init__(self,role:str,desc:str,tools:list,llm,instruct_promt=None,output_prompt=None,state={},config:dict={},verbose:bool=False,execution_type:str="seq",max_conv_history=10,prev_conversation=[]) -> None:
+    def __init__(self,role:str,desc:str,llm,tools:list,instruct_promt=None,output_prompt=None,state={},config:dict={},verbose:bool=False,execution_type:str="seq",max_conv_history=10,prev_conversation=[]) -> None:
         """_summary_
 
         Args:
@@ -34,30 +34,40 @@ class Agent:
         
         self.desc=desc
         self.tools=tools
+        
         self.llm=llm
         self.execution_type=execution_type
         self.tool_calls=""
-        # Converts the tools to openai formated tool_calls
-        self.functions=[convert_to_openai_function(t) for t in tools]
-        # Converts the tools to {tool_name: tool_func} format
-        self.tools_action={tool_name['name']:func for tool_name,func in zip(self.functions,self.tools)}
-        
-        self.system_prompt=self._init_system_prompt_(role,desc)
-        self.prompt=self._create_prompt_history_(self.system_prompt)
-        self.chat_history = ChatMessageHistory()
-        # Have a stored History with only important query-->final response
-        self.memory=ChatMessageHistory()
-        
-        #comment Chain
-        self.local_chat_history=self._set_local_history_()
-        self.comment_prompt=self.__init__local_chat(self.instruct_promt,self.output_prompt)
-        self.comment_chain=self.comment_prompt | self.llm
-        
+        #check if tools are present or not
+        self.flagZeroShot=False if len(tools)>0 else True
+        if not self.flagZeroShot:
+            # Converts the tools to openai formated tool_calls
+            self.functions=[convert_to_openai_function(t) for t in tools]
+            # Converts the tools to {tool_name: tool_func} format
+            self.tools_action={tool_name['name']:func for tool_name,func in zip(self.functions,self.tools)}
+            
+            self.system_prompt=self._init_system_prompt_(role,desc)
+            self.prompt=self._create_prompt_history_(self.system_prompt)
+            self.chat_history = ChatMessageHistory()
+            # Have a stored History with only important query-->final response
+            self.memory=ChatMessageHistory()
+            
+            #comment Chain
+            self.local_chat_history=self._set_local_history_()
+            self.comment_prompt=self.__init__local_chat(self.instruct_promt,self.output_prompt)
+            self.comment_chain=self.comment_prompt | self.llm
+            
+            #create LLM chain 
+            self.chain = self.prompt | self.llm.bind(functions=self.functions)
+        else:
+            self.system_prompt=self._init_zeroshot_prompt_(role,desc,instruct_promt,output_prompt)
+            self.prompt=self._create_prompt_history_(self.system_prompt)
+            self.chat_history = ChatMessageHistory()
+            self.chain = self.prompt | self.llm
         #Followup Chain
         self.followup=self._init_followup_()
         self.followup_chain=self.followup | self.llm
-        #create LLM chain 
-        self.chain = self.prompt | self.llm.bind(functions=self.functions)
+        
         self.intermediatory_steps={}
         self.config=config
         self.state_dict=StateDict()
@@ -83,7 +93,21 @@ class Agent:
             for conv in prev_conversation:
                 self.chat_history.add_user_message(conv["user_query"])
                 self.chat_history.add_ai_message(conv["response"])
-    
+                
+                
+    def _init_zeroshot_prompt_(self,role:str,desc:str,instruct_promt:str,output_prompt:str):
+        prompt=f'''You are a helpful AI assitant. Your user facing role and description is given below. Answer the user query in the best possible way.
+        
+        Your user facing role here is :{role}
+        Your user facing job is: {desc}
+        '''
+        if instruct_promt:
+            prompt+=f"\n Here is some Instruction/Examples : {instruct_promt}"
+        if output_prompt:
+            prompt+=f"\n Note:{output_prompt}"
+        
+        return prompt
+        
     def _init_followup_(self):
         prompt=f'''Given the conversation Can you recommend 3 follow up questions. Use only the information from the conversation.
         Note: Give the output in the format, Dont add anything extra
@@ -177,6 +201,7 @@ class Agent:
         Returns:
             Message: Output of the LLM Model
         """
+        print(chat_history.messages)
         out=self.chain.invoke(
                 {
                     "messages": chat_history.messages[-self.max_conv_history:],
@@ -280,10 +305,9 @@ class Agent:
         
     def _execute_agent(self,query):
         self._reset_state_()
-        self._set_local_history_()
         
-        if len(self.tools)==0:
-            raise Exception("No tools were added to the the Agent!! Please add tools to continue")
+        self.local_chat_history=self._set_local_history_()
+        
         # For Parallel and Sequencial Runs
         self.state_dict.state['input']=query
         # For Parallel and Sequencial Runs
@@ -298,54 +322,55 @@ class Agent:
         
         self.chat_history.add_message(out)
         self.local_chat_history.add_message(out)
-       
+        if not self.flagZeroShot:
         #last_stable_output=out.content
-        while "function_call" in out.additional_kwargs:
-            print("Enter tool call")
-            if "function_call" in out.additional_kwargs:
-                tool_name=out.additional_kwargs['function_call']['name']
-                if tool_name==self.tool_calls or tool_name not in self.tools_action:
-                    self.chat_history.messages=self.chat_history.messages[:-1]
-                    self.local_chat_history.messages=self.local_chat_history.messages[:-1]
-                    break
-                if self.verbose:
-                    print("tool_call:",out.additional_kwargs)
+            while "function_call" in out.additional_kwargs:
+                print("Enter tool call")
+                if "function_call" in out.additional_kwargs:
+                    tool_name=out.additional_kwargs['function_call']['name']
+                    if tool_name==self.tool_calls or tool_name not in self.tools_action:
+                        self.chat_history.messages=self.chat_history.messages[:-1]
+                        self.local_chat_history.messages=self.local_chat_history.messages[:-1]
+                        break
+                    if self.verbose:
+                        print("tool_call:",out.additional_kwargs)
+                    
+                    tool_name,tool_output=self._run_tool(out.additional_kwargs["function_call"])
+                    func_msg=FunctionMessage(name=tool_name,content=tool_output)
+                    
+                    self.chat_history.add_message(func_msg)
+                    self.local_chat_history.add_message(func_msg)
+                    
+                    self.intermediatory_steps[tool_name]=tool_output
+                    self.tool_calls=tool_name
+                    #last_stable_output=tool_output
+                #check if more info is required
                 
-                tool_name,tool_output=self._run_tool(out.additional_kwargs["function_call"])
-                func_msg=FunctionMessage(name=tool_name,content=tool_output)
-                
-                self.chat_history.add_message(func_msg)
-                self.local_chat_history.add_message(func_msg)
-                
-                self.intermediatory_steps[tool_name]=tool_output
-                self.tool_calls=tool_name
-                #last_stable_output=tool_output
-            #check if more info is required
-            
-            self.chat_history.add_user_message("Is there any other tool that can be used for the task? Answer only in 'yes' or 'no'")
-            out=self._invoke_agent_(self.chat_history)
-            self.chat_history.add_message(out)
-            #print(out)
-            if out.content.lower() =="yes":
+                self.chat_history.add_user_message("Is there any other tool that can be used for the task? Answer only in 'yes' or 'no'")
                 out=self._invoke_agent_(self.chat_history)
-                
                 self.chat_history.add_message(out)
-                self.local_chat_history.add_message(out)
-        
-        
-        if self.execution_type=="parallel":
-            context="\n".join([ k+": "+inter for k,inter in self.intermediatory_steps.items()])
-            self.local_chat_history.add_ai_message(context)
+                #print(out)
+                if out.content.lower() =="yes":
+                    out=self._invoke_agent_(self.chat_history)
+                    
+                    self.chat_history.add_message(out)
+                    self.local_chat_history.add_message(out)
             
-        #commentary tool
-        out=self._invoke_comment_agent_(self.local_chat_history)
-        #followup tool
+            
+            if self.execution_type=="parallel":
+                context="\n".join([ k+": "+inter for k,inter in self.intermediatory_steps.items()])
+                self.local_chat_history.add_ai_message(context)
+                
+            #commentary tool
+            out=self._invoke_comment_agent_(self.local_chat_history)
+            #followup tool
+            
+            #reset Chat History
+            #self._reset_chat_history_(query,out)
+            self.tool_calls=""
         followup=self._invoke_followup_agent_(self.local_chat_history)
         followup=followup.content.split('\n')
         self.state_dict.state['Tokens']=self.tokens
-        
-        #reset Chat History
-        #self._reset_chat_history_(query,out)
-        self.tool_calls=""
+            
         return out.content,self.state_dict.state,followup
         

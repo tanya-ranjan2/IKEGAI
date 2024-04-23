@@ -1,0 +1,41 @@
+{
+    "id": "TEST123",
+    "config_manager": {
+        "llm_params": {
+            "llm_type": "commercial",
+            "llm_name": "AzureOpenAI",
+            "model_version": "2024-02-15-preview"
+        },
+        "agents": [
+            {
+                "agent_id": "A1",
+                "name": "DocumentAgent",
+                "run_parallel": false,
+                "tools": [
+                   
+                ]
+            }
+        ]
+    },
+
+    "usecase_info": {
+        "name": "Test Architecture",
+        "desc": "This is a test Architecture",
+        "func": "string",
+        "logo": "string",
+        "publish": "public",
+        "stage": "string"
+    },
+    "prompt_manager": {
+        "DocumentAgent": {
+            "role": "Assitant",
+            "base_prompt": "You are a AI assitant for helping in sentiment analysis",
+            "instruction_prompt": "Instructions: give the responce in one word as given in the examples \nExamples: \nQ: This is awesome!\n A: Negative\nQ: This is bad!\nA: Positive\nQ: Wow that movie was rad!\nA:Positive",
+            "output_prompt": {
+                "tone": "friendly",
+                "rules": "string",
+                "verification_criteria": "string"
+            }
+        }
+    }
+}

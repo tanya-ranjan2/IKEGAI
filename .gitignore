@@ -5,6 +5,6 @@ _tbd.py
 .DS_Store
 .ipynb_checkpoints/
 Files
-app/logs/Celery.log
+logs/*
 stroage/*
 *.log
