@@ -15,7 +15,7 @@ def create_agents(config):
         config (dict): Configation setting
 
     Returns:
-        _type_: _description_
+        list: returns list of Agents
     """
     agent_details=parser.get_agent_details(config)
     llm=llmbuilder("azureopenai")
