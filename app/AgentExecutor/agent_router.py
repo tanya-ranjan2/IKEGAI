@@ -88,6 +88,15 @@ def execute(agent_info:agent_schema.AgentExecute):
 @router.post("/uploadfile/{idx}")
 def create_upload_file(file: list[UploadFile],idx:str):
     files=[f for f in file]
+    config_data=APIconnector.get_usecase_details(idx)
+    print("=====Config data ========")
+    all_tool_names=[]
+    for a in config_data["config_manager"]["agents"]:
+        for t in a['tools']:
+            all_tool_names.append(t['tool_name'])
+    print("=========================")
+    print(all_tool_names)
+    
     for file in files:
         contents = file.file.read()
         with open(os.path.join(STORAGE_DRIVE,file.filename), 'wb') as f:
@@ -97,7 +106,9 @@ def create_upload_file(file: list[UploadFile],idx:str):
             "status":"QUEUED",
             "file_path":os.path.join(STORAGE_DRIVE,file.filename)
         })
-        uploadpdf.delay(idx,os.path.join(STORAGE_DRIVE,file.filename),file.filename)
+        if 'rag' in all_tool_names:
+            uploadpdf.delay(idx,os.path.join(STORAGE_DRIVE,file.filename),file.filename)
+        
     return {"filename": [f.filename for f in files]}
 
 
