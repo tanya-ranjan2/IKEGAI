@@ -11,7 +11,6 @@ from langchain.prompts import FewShotPromptTemplate, PromptTemplate
 from langchain_openai.embeddings.azure import AzureOpenAIEmbeddings
 from langchain.prompts.example_selector import SemanticSimilarityExampleSelector
 from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool, QuerySQLCheckerTool
-from memory_profiler import profile
 
 llm_info = {
     "openai_api_base" : "https://openai-lh.openai.azure.com/openai/", 

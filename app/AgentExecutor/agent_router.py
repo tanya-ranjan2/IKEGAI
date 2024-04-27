@@ -89,14 +89,11 @@ def execute(agent_info:agent_schema.AgentExecute):
 def create_upload_file(file: list[UploadFile],idx:str):
     files=[f for f in file]
     config_data=APIconnector.get_usecase_details(idx)
-    print("=====Config data ========")
+    
     all_tool_names=[]
     for a in config_data["config_manager"]["agents"]:
         for t in a['tools']:
-            all_tool_names.append(t['tool_name'])
-    print("=========================")
-    print(all_tool_names)
-    
+            all_tool_names.append(t['tool_name']) 
     for file in files:
         contents = file.file.read()
         with open(os.path.join(STORAGE_DRIVE,file.filename), 'wb') as f:

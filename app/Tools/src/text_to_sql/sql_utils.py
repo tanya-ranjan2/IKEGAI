@@ -4,7 +4,7 @@ from langchain.chains import create_sql_query_chain
 from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool, QuerySQLCheckerTool
 import pandas as pd
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
-from memory_profiler import profile
+#from memory_profiler import profile
 
 azure_llm = AzureChatOpenAI(
     openai_api_base = 'https://openai-lh.openai.azure.com/openai/',

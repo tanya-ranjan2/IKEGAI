@@ -4,7 +4,7 @@ import numpy as np
 from prophet import Prophet
 import plotly.express as px 
 import plotly.graph_objects as go
-from memory_profiler import profile
+#from memory_profiler import profile
 from sklearn.metrics import mean_absolute_error, mean_squared_error, mean_squared_log_error
 
 class AccuracyMetrics : 
