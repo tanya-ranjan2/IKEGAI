@@ -11,7 +11,7 @@ from dataclasses import asdict
 from utils import parser
 from langchain_community.utilities import SQLDatabase
 
-config_data=json.load(open('_temp/configManager.json'))
+config_data=json.load(open('_temp/configManager_for_forecasting.json'))
 agent_details=parser.get_agent_details(config_data)
 
 print(agent_details)
@@ -26,7 +26,8 @@ forecasting_agent= agents.Agent(
     tools = [extract_keywords],
     config = agent_details[0]['func_config'],
     verbose = True,
-    execution_type = 'sequential'
+    execution_type = 'parallel'
 )
  
-print("OUTPUT:",forecasting_agent._execute_agent("predict the balance for next 1 month"))
+user_input = input("enter your query : ")
+print("OUTPUT:",forecasting_agent._execute_agent(user_input))

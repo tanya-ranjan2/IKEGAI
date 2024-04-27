@@ -4,7 +4,7 @@ from langchain.chains import create_sql_query_chain
 from langchain_community.tools.sql_database.tool import QuerySQLDataBaseTool, QuerySQLCheckerTool
 import pandas as pd
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
-
+from memory_profiler import profile
 
 azure_llm = AzureChatOpenAI(
     openai_api_base = 'https://openai-lh.openai.azure.com/openai/',
@@ -14,34 +14,8 @@ azure_llm = AzureChatOpenAI(
     temperature = 0
 ) 
 
-# def execute_sql_query(feature_parameters: dict, db_path: str) -> str : 
-#     db = SQLDatabase.from_uri("sqlite:///"+db_path) 
-#     all_features = feature_parameters["feature"]
-
-#     print(all_features)
-
-#     # question = f"""
-#     # Give me all the values of date, {all_features} from the database.
-#     # """
-
-#     question = f"""
-    
-#     Give me all the values of date, {all_features} from the database and apply filter based on {feature_parameters["exogenous_variable"]}
-#     """
-
-#     execute_query = QuerySQLDataBaseTool(db=db) 
-#     query_checker = QuerySQLCheckerTool(db=db, llm=azure_llm)
-#     write_query = create_sql_query_chain(azure_llm, db)
-    
-#     chain = write_query | query_checker | execute_query
-    
-#     result = chain.invoke({
-#         "question": question 
-#     }) 
-
-#     return result 
-
-def execute_sql_query(feature_parameters: dict, db_path: str) -> str :  
+# @profile
+def execute_sql_query(feature_parameters: dict, db_path: str, meta_data: str = "") -> str :  
     db = SQLDatabase.from_uri("sqlite:///"+db_path) 
     all_features = feature_parameters["feature"]
 
@@ -49,12 +23,17 @@ def execute_sql_query(feature_parameters: dict, db_path: str) -> str :
     context = toolkit.get_context()
 
     question = f"""
-    You are an intelligent AI agent to generate sql query based on the user query. \n
+    You are a helpful AI assistant expert in querying SQL Database to find answers to user's question. \n
     Your task is to return all the values of date, {all_features} from the database \n
     and apply filter based on the filters given below :
     {feature_parameters["filter"]}.
 
-    also consider the database context given below : 
+    Consider the following meta data and database context to understand the tables : 
+    ---------
+    meta data : 
+    {meta_data}
+    ---------
+    database context : 
     {context}
 
     NOTE: DON'T apply order or limit.
@@ -64,12 +43,10 @@ def execute_sql_query(feature_parameters: dict, db_path: str) -> str :
     query_checker = QuerySQLCheckerTool(db=db, llm=azure_llm)
     write_query = create_sql_query_chain(azure_llm, db)
 
-    # print(context)
-    chain = write_query | query_checker | execute_query
+    chain = write_query | query_checker | execute_query 
     
     result = chain.invoke({
         "question": question 
     }) 
 
-    # print(result)
     return result 

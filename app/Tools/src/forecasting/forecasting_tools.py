@@ -12,7 +12,7 @@ from utils.llmops import llmbuilder
 import pandas as pd
  
 @tool(return_direct = False, args_schema=ForecastingUsingProphet)
-def forecast_using_prophet(user_query: str, mongo_store: bool = False, default_days: int = 5, db_path: str = "database/sample_data.sqlite3", **kwargs) -> str: 
+def forecast_using_prophet(user_query: str, default_days: int = 5, db_path: str = "database/sample_data.sqlite3", **kwargs) -> str: 
     """
     This is a time series forecaster. The forecasting based on the `filter_data` and `feature_parameters` which is recieved from the `extract_keywords` tool.
     """
@@ -35,5 +35,5 @@ def forecast_using_prophet(user_query: str, mongo_store: bool = False, default_d
         feature_parameters = agent_state.state['feature_parameters'] 
         filter_data = agent_state.state['filter_data'] 
 
-    result = forecast_using_prophet_utils(filter_data, feature_parameters, mongo_store)
+    result = forecast_using_prophet_utils(filter_data, feature_parameters)
     return result
