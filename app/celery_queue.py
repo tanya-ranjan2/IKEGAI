@@ -21,14 +21,14 @@ logger = logging.getLogger()
 # Setting the threshold of logger to DEBUG
 logger.setLevel(logging.INFO)
 
-#redis = Redis(**asdict(RedisBroker()))
-#redis.flushall()
-#redis.flushdb()
+redis = Redis(**asdict(RedisBroker()))
+redis.flushall()
+redis.flushdb()
 
 #BrokerUrl='pyamqp://guest:guest@20.41.249.147//'
 #app = Celery(name='celery_queue',broker=BrokerUrl)
-#app=Celery(**asdict(CeleryQueue()))
-app = Celery('celery_queue', broker='redis://redis/0', backend='redis://redis/0')
+app=Celery(**asdict(CeleryQueue()))
+#app = Celery('celery_queue', broker='redis://redis/0', backend='redis://redis/0')
 
 
 azure_form= model_utils.AzureDocIntell(**asdict(AzureDocumentInfo()))

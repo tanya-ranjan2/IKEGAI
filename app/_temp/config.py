@@ -24,8 +24,8 @@ class AzureDocumentInfo:
     
 @dataclass
 class ChromaClient:
-    #host:str="http://20.41.249.147:6062"
-    host:str="http://192.168.1.2:6062"
+    host:str="http://20.41.249.147:6062"
+    #host:str="http://192.168.1.2:6062"
     #port:int=6062
 
 
