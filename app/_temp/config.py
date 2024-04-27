@@ -38,8 +38,8 @@ class CeleryQueue:
     
 @dataclass
 class RedisBroker:
-    #host:str="20.41.249.147"
-    host:str="127.0.0.1"
+    host:str="20.41.249.147"
+    #host:str="127.0.0.1"
     port:int=6379
     username:str="default"
     password:str="admin"
