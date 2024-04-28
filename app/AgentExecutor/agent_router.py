@@ -76,10 +76,11 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
             
     #Evaluation
     prompt_token=metadata["Tokens"]["prompt_tokens"]
-    completion_token=metadata["Tokens"]["completion_token"]
+    completion_token=metadata["Tokens"]["completion_tokens"]
     user_id=""
     ground_truth=""
     res=APIconnector.send_eval(agent_info.uid,user_id,agent_info.query,out,ground_truth,prompt_token,completion_token,MODEL_NAME)
+    print("RESPONCE",res)
     return {"output":out,"metadata":metadata,"followup":followup}
 
 

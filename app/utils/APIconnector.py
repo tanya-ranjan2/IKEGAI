@@ -19,10 +19,11 @@ def send_eval(uid,user_id,query,responce,ground_truth,prompt_token,completion_to
         "prompt":query,
         "llm_response": responce,
         "ground_truth": ground_truth,
-        "prompt_token": prompt_token,
-        "completion_token": completion_token,
+        "prompt_token": str(prompt_token),
+        "completion_token": str(completion_token),
         "model_name": model_name
     }
+    print(data)
     res=requests.post(f"https://ikegai.southindia.cloudapp.azure.com/solution-manager/evaluate/evaluate_LLM/",json=data)
     return {"status":res.status_code}
     
