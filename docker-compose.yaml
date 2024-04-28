@@ -21,6 +21,7 @@ services:
       - demo-volume:/app
     depends_on:
       - app
+      - redis
 volumes:
  demo-volume:
    #external: true
