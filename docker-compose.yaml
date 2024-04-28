@@ -16,7 +16,7 @@ services:
   celery_worker:
     container_name: celery_worker
     build: .
-    command: celery --app celery_queue worker --loglevel=debug --pool=solo 
+    command: celery --app celery_queue worker --loglevel=debug --pool=solo -E --logfile=logs/celery_main.log
     volumes:
       - demo-volume:/app
     depends_on:
