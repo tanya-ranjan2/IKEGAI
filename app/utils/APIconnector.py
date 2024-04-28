@@ -12,5 +12,20 @@ def get_usecase_details(uid):
         return {"status":res.status_code}
     
     
+def send_eval(uid,user_id,query,responce,ground_truth,prompt_token,completion_token,model_name):
+    data={
+        "usecase_id": uid,
+        "user_id": user_id,
+        "prompt":query,
+        "llm_response": responce,
+        "ground_truth": ground_truth,
+        "prompt_token": prompt_token,
+        "completion_token": completion_token,
+        "model_name": model_name
+    }
+    res=requests.post(f"https://ikegai.southindia.cloudapp.azure.com/solution-manager/evaluate/evaluate_LLM/",json=data)
+    return {"status":res.status_code}
+    
+
 if __name__=="__main__":
     print(get_usecase_details('TEST123'))

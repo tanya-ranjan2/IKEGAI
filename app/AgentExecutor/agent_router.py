@@ -35,6 +35,7 @@ def get_agent_details(uid):
 
 @router.post("/execute_agent/")
 def execute_agent(agent_info:agent_schema.AgentExecute):
+    MODEL_NAME="azureopenai"
     config_data=APIconnector.get_usecase_details(agent_info.uid)
     #print("CONFIG",config_data)
     if 'is_direct_api' in config_data and 'api_url' in config_data:
@@ -55,7 +56,7 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
             out,metadata,followup=agent.run(agent_info.query)
     else:
         print("---------Builder--------")
-        llm=llmops.llmbuilder("azureopenai")
+        llm=llmops.llmbuilder(MODEL_NAME)
         agents=helper.create_agents(config_data)
         if len(agents)==1:
             agent=helper.create_agents(config_data)[0]
@@ -72,6 +73,13 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
                 "obj":agent_crew
             }
             out,metadata,followup=agent_crew.run(agent_info.query)
+            
+    #Evaluation
+    prompt_token=metadata["Tokens"]["prompt_tokens"]
+    completion_token=metadata["Tokens"]["completion_token"]
+    user_id=""
+    ground_truth=""
+    res=APIconnector.send_eval(agent_info.uid,user_id,agent_info.query,out,ground_truth,prompt_token,completion_token,MODEL_NAME)
     return {"output":out,"metadata":metadata,"followup":followup}
 
 
