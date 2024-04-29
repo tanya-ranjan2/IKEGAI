@@ -81,6 +81,7 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
     ground_truth=""
     res=APIconnector.send_eval(agent_info.uid,user_id,agent_info.query,out,ground_truth,prompt_token,completion_token,MODEL_NAME)
     print("RESPONCE",res)
+    #print({"output":out,"metadata":metadata,"followup":followup})
     return {"output":out,"metadata":metadata,"followup":followup}
 
 

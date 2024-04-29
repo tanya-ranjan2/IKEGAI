@@ -76,9 +76,9 @@ def forecast_using_prophet_utils(filter_data: list[tuple], feature_parameters: d
             "MSE" : accuracy_obj.MSE(), 
             "MAE" : accuracy_obj.MAE(), 
             "RMSE" : accuracy_obj.RMSE(), 
-            "MAPE" : accuracy_obj.MAPE(), 
+            #"MAPE" : accuracy_obj.MAPE(), 
             "forecast_bias" : accuracy_obj.forecast_bias(),
-            "MSLE" : accuracy_obj.MSLE()
+            #"MSLE" : accuracy_obj.MSLE()
         }
 
         to_chop = feature_parameters["days_to_forecast"]
