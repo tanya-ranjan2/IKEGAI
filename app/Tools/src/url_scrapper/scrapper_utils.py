@@ -97,7 +97,6 @@ def get_text_from_url(url):
 
 def load_vectordb(text, embeddings):
     text_splitter = CharacterTextSplitter(
-        # separator = "\n",
         chunk_size = 1000,
         chunk_overlap  = 100,
         length_function = len
