@@ -33,14 +33,16 @@ class AccuracyMetrics :
         return mean_squared_log_error(y_true=self.y_true, y_pred=self.y_pred)
     
 # @profile
-def preprocess(filter_data: list[list], feature_parameters: dict) -> pd.DataFrame :  
+def preprocess(filter_data: list[list], feature_parameters: dict, positive: bool = True) -> pd.DataFrame :  
     filter_data = eval(filter_data)
     all_features = [feature_parameters["feature"]]
     all_features.sort()   
     df = pd.DataFrame(filter_data, columns=['date'] + all_features)
     df["date"] = pd.to_datetime(df['date']).dt.date
     df = df.sort_values(by='date') 
-    return df 
+    if positive :
+        df = df[df[feature_parameters["feature"]] > 0]
+    return df
     
 # @profile
 def forecast_using_prophet_utils(filter_data: list[tuple], feature_parameters: dict) -> str : 

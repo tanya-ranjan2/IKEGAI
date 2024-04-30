@@ -358,9 +358,9 @@ def extract_feature_keywords_for_sql_query(user_query: str, feature_extractor_in
             "filter": '[]'
         },
         {
-            "query" : "what will be the inventory of next 1 months for paper of category l3",
+            "query" : "what will be the inventory of next 1 months for paper labels of category l3",
             "feature":"inventory",
-            "filter": '[]'
+            "filter": '[["category l3", "paper labels"]]'
         },
         {
             "query" : "predict the balance of next month where account type is investment",
@@ -380,6 +380,11 @@ def extract_feature_keywords_for_sql_query(user_query: str, feature_extractor_in
         {
             "query" : "total order value for next 2 months",
             "feature":"total order value",
+            "filter": '[]'
+        },
+        {
+            "query" : "unit price for next 2 years",
+            "feature":"unit price",
             "filter": '[]'
         }
     ]
