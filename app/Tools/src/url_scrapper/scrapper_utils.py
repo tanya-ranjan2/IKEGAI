@@ -4,14 +4,11 @@ from langchain_community.vectorstores import Chroma
 from langchain.chains import RetrievalQA
 from langchain_openai import AzureOpenAIEmbeddings
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString, Tag
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.text_splitter import TokenTextSplitter
 from collections import deque
-from bs4 import Tag, NavigableString
-import pandas as pd
- 
- 
+
 def load_embeddings():
     # embeddings=HuggingFaceEmbeddings()
     embeddings = AzureOpenAIEmbeddings(
@@ -22,7 +19,7 @@ def load_embeddings():
         openai_api_type = "azure"
     )
     return embeddings
- 
+
 def llm():
     llm = AzureChatOpenAI(
             openai_api_base = "https://openai-lh.openai.azure.com/openai/deployments/LH-GPT",
@@ -44,9 +41,18 @@ def extract_text(node):
         'h6': lambda strings: f"\n###### {''.join(s.strip() for s in strings)}",
         'p': lambda strings: f"\n{''.join(s.strip() for s in strings)}",
         'span': lambda strings: f"\`{''.join(s.strip() for s in strings)}\`",
-        'li': lambda strings: f"\n- {''.join(s.strip() for s in strings)}",
+        'li': lambda tag: handle_li_tag(tag, formatting_functions),
         'strong': lambda strings: f"\n**{''.join(s.strip() for s in strings)}**"
     }
+
+    def handle_li_tag(strings):
+        formatted_strings = []
+        for string in strings:
+            if isinstance(string, NavigableString):
+                formatted_strings.append(string.strip())
+            elif isinstance(string, Tag):
+                formatted_strings.append(extract_text(string))
+        return f"\n- {''.join(formatted_strings)}"
 
     while stack:
         current_node = stack.pop()
@@ -59,18 +65,22 @@ def extract_text(node):
             navbar_elements = ['nav', 'header', 'footer']
             if current_node.name == 'script' or current_node.name in navbar_elements:
                 continue
-            
+
             elif current_node.name in formatting_functions:
+                if current_node.name == 'li':
+                    text.append(handle_li_tag(current_node.contents))
+                else:
                     text.append(formatting_functions[current_node.name](current_node.strings))
-            
+
             elif current_node.name == 'table':
                 text.append(str(current_node))
 
             else:
                 # For other non-heading or non-paragraph tags, extend the stack with their children
                 children = reversed(list(current_node.children))
-                stack.extend(children)                
-    # print('\n'.join(text))
+                stack.extend(children)
+
+    print('\n'.join(text))
     return '\n'.join(text)
 
 def get_text_from_url(url):
@@ -84,7 +94,7 @@ def get_text_from_url(url):
             return "failed to fetch content of url"
     except requests.exceptions.RequestException as e:
         return "error"
- 
+
 def load_vectordb(text, embeddings):
     text_splitter = CharacterTextSplitter(
         separator = "\n",
