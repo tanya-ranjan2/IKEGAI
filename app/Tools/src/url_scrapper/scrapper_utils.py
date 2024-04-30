@@ -6,6 +6,7 @@ from langchain_openai import AzureOpenAIEmbeddings
 import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.text_splitter import TokenTextSplitter
 from collections import deque
 
 def load_embeddings():
@@ -79,7 +80,7 @@ def extract_text(node):
                 children = reversed(list(current_node.children))
                 stack.extend(children)
 
-    print('\n'.join(text))
+    # print('\n'.join(text))
     return '\n'.join(text)
 
 def get_text_from_url(url):
@@ -96,7 +97,7 @@ def get_text_from_url(url):
 
 def load_vectordb(text, embeddings):
     text_splitter = CharacterTextSplitter(
-        separator = "\n",
+        # separator = "\n",
         chunk_size = 1000,
         chunk_overlap  = 100,
         length_function = len
