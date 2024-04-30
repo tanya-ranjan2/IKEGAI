@@ -2,7 +2,6 @@ from langchain.prompts import PromptTemplate
 from langchain.tools import tool
 from langchain_openai.chat_models import AzureChatOpenAI
 from langchain_community.vectorstores import Chroma
-from langchain.chains import RetrievalQA
  
 #local Imports
 from Tools.schema.scrapper_schema import ScrapperTool
@@ -16,6 +15,6 @@ def scrapper(query: str, url:str, **kwargs)->str:
     text = scrapper_utils.get_text_from_url(url)
     embeddings = scrapper_utils.load_embeddings()
     qa = scrapper_utils.load_vectordb(text, embeddings)
-    result = qa.run(query)
+    result = qa.invoke({"query": query})
     agent_state.state["scrapper_result"] = result
     return str(result)
