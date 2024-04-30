@@ -6,7 +6,6 @@ from langchain_openai import AzureOpenAIEmbeddings
 import requests
 from bs4 import BeautifulSoup, NavigableString, Tag
 from langchain.text_splitter import CharacterTextSplitter
-from langchain.text_splitter import TokenTextSplitter
 from collections import deque
 
 def load_embeddings():
@@ -41,7 +40,7 @@ def extract_text(node):
         'h6': lambda strings: f"\n###### {''.join(s.strip() for s in strings)}",
         'p': lambda strings: f"\n{''.join(s.strip() for s in strings)}",
         'span': lambda strings: f"\`{''.join(s.strip() for s in strings)}\`",
-        'li': lambda tag: handle_li_tag(tag, formatting_functions),
+        'li': lambda tag: handle_li_tag(tag),
         'strong': lambda strings: f"\n**{''.join(s.strip() for s in strings)}**"
     }
 
