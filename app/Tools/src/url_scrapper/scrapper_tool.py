@@ -15,6 +15,6 @@ def scrapper(query: str, url:str, **kwargs)->str:
     text = scrapper_utils.get_text_from_url(url)
     embeddings = scrapper_utils.load_embeddings()
     qa = scrapper_utils.load_vectordb(text, embeddings)
-    result = qa.invoke({"query": query})
+    result = qa.invoke({"query": query+"answer from url"})
     agent_state.state["scrapper_result"] = result
     return str(result)
