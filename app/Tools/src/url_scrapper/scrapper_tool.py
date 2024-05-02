@@ -2,6 +2,12 @@ from langchain.prompts import PromptTemplate
 from langchain.tools import tool
 from langchain_openai.chat_models import AzureChatOpenAI
 from langchain_community.vectorstores import Chroma
+from langchain.tools import BaseTool, StructuredTool, Tool, tool
+from langchain_openai.chat_models import AzureChatOpenAI
+
+#local Imports
+from Tools.src import tool_utils
+from utils.llmops import llmbuilder
  
 #local Imports
 from Tools.schema.scrapper_schema import ScrapperTool
@@ -12,9 +18,15 @@ from Tools.src.url_scrapper import scrapper_utils
 def scrapper(query: str, url:str, **kwargs)->str:
     """Returns answer based on the content retrieved from url and `user query`"""
     agent_state=kwargs['state']
+    data_sourse=agent_state.config['data_sources']
     text = scrapper_utils.get_text_from_url(url)
     embeddings = scrapper_utils.load_embeddings()
-    qa = scrapper_utils.load_vectordb(text, embeddings)
-    result = qa.invoke({"query": query+", answer from url"})
+    db=scrapper_utils.load_vectordb(text,
+                                    data_sourse['storage_name'],
+                                    embeddings,
+                                    topk=10,
+                                    collection_name=data_sourse['collection_name']
+                                    )
+    result=db.invoke(query+", answer from url")
     agent_state.state["scrapper_result"] = result
     return str(result)
