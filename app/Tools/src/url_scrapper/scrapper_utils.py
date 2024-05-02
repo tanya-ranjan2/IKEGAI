@@ -7,7 +7,6 @@ from bs4 import BeautifulSoup
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.text_splitter import MarkdownTextSplitter
-import html2text
 # from langchain_core.documents.base import Document
 # from langchain_core.documents import Document
 from langchain_community.docstore.document import Document
