@@ -12,13 +12,14 @@ from utils.llmops import llmbuilder
 import pandas as pd
 
 @tool(return_direct = True, args_schema=ExtractKeywords)
-def extract_keywords(user_query: str, default_days: int = 5, db_path: str = "database/sample_data.sqlite3", meta_data_path: str = "meta_data.txt", **kwargs) -> str: 
+def extract_keywords(user_query: str, default_days: int = 5, db_path: str = "database/sample_data.sqlite3", meta_data_path: str = "database/meta_data.txt", **kwargs) -> str: 
     """
     Generate the SQL query from natural language user query and do the forecasting.
     """
     print("input to the function --> ", user_query)
     agent_state = kwargs['state'] 
 
+    user_query = user_query.lower()
     with open(meta_data_path, "r+") as f: 
         meta_data = f.read()
 
@@ -27,15 +28,17 @@ def extract_keywords(user_query: str, default_days: int = 5, db_path: str = "dat
 
     # ? remove date filters from the list 
     restricted_entity, new_filter = {"month", "year", "week", "quarter", "fortnight", "day", "date"}, []
-    for filter_list in extracted_feature["filter"] : 
-        flag = True
-        for entity in restricted_entity : 
-            for keyword in filter_list : 
-                if entity in keyword :
-                    flag = False 
+    if extracted_feature["filter"] :
+        for filter_list in extracted_feature["filter"] : 
+            flag = True
+            if type(filter_list) == list :
+                for entity in restricted_entity : 
+                    for keyword in filter_list :  
+                        if entity in keyword.lower() :
+                            flag = False 
 
-        if flag : 
-            new_filter.append(filter_list)
+                if flag : 
+                    new_filter.append(filter_list)
 
     extracted_feature = {
         "feature" : extracted_feature["feature"], 

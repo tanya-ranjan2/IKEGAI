@@ -418,30 +418,20 @@ def extract_feature_keywords_for_sql_query(user_query: str, feature_extractor_in
         )
     
     # the prefix is our instructions
-    prefix = f"""
-        You are an intelligent AI system whose task is to extract feature and filters from the `user query` for a sql query to filter data for forecasting.
-        
-        ----------------------------------------------
-        TASK:
-        - try to understand what if the feature of interset that we are trying to forecast and the required filters needed to generate sql query.
+    prefix = f"""You are AI system whose task is to extract feature and filters from the user query for a sql query to filter data for forecasting.
 
-        ----------------------------------------------
-        OUTPUT:
-        - "feature" : feature on which we want to perform forecasting. typically a column of the table of numerical data type.
-        - "filter" : additional filter to apply on to filter the dataframe. 
-        
-        NOTE : DO NOT include filters related to date, time, month, year, week, quarter, fortnight or day
+        "feature" : feature on which we want to perform forecasting. typically a column of the table.
+        "filter" : additional filter to apply on to filter the dataframe except filters related to date
 
-        ----------------------------------------------
-        CONTEXT: 
-        Also use the following meta data to understand the database context and understand the `user query`. 
+        Also use the following meta data to understand the database context and understand the query. 
+
         {meta_data}
-
-        ----------------------------------------------
-        NOTE: Please try to be specific about the keywords. The output should only have feature and
+        
+        Note: Please try to be specific about the keywords. The output should only have feature and
         filter. And all the features should be in double quotes.
         
         ----------------------------------------------
+        
         examples :
     """
     

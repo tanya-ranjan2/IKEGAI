@@ -12,7 +12,7 @@
                         "args" : {
                             "default_days": 5, 
                             "db_path" : "database/sample_data.sqlite3",
-                            "meta_data_path" : "meta_data.txt"
+                            "meta_data_path" : "database/meta_data.txt"
                         }, 
                         "isSpecial" : false
                     }
