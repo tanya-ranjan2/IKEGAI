@@ -8,3 +8,5 @@ Files
 logs/*
 stroage/*
 *.log
+temp/*
+app/temp/*

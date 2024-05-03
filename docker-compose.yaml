@@ -2,6 +2,7 @@ version: '3.4'
 services:
   redis:
     image: redis
+    restart: always
     ports:
       - 6379:6379
   app:
@@ -19,6 +20,7 @@ services:
     command: celery --app celery_queue worker --loglevel=debug --pool=solo -E --logfile=logs/celery_main.log
     volumes:
       - demo-volume:/app
+    restart: always
     depends_on:
       - app
       - redis
