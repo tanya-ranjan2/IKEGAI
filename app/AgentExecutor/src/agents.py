@@ -201,7 +201,8 @@ class Agent:
         Returns:
             Message: Output of the LLM Model
         """
-        print(chat_history.messages)
+        if self.verbose:
+            print(chat_history.messages)
         out=self.chain.invoke(
                 {
                     "messages": chat_history.messages[-self.max_conv_history:],
@@ -325,7 +326,8 @@ class Agent:
         if not self.flagZeroShot:
         #last_stable_output=out.content
             while "function_call" in out.additional_kwargs:
-                print("Enter tool call")
+                if self.verbose:
+                    print("Enter tool call")
                 if "function_call" in out.additional_kwargs:
                     tool_name=out.additional_kwargs['function_call']['name']
                     if tool_name==self.tool_calls or tool_name not in self.tools_action:
