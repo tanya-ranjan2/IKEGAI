@@ -68,7 +68,7 @@ def get_text_from_url(url):
     except requests.exceptions.RequestException as e:
         return f"Error fetching data from {url}: {e}"
     
-def load_vectordb(text, persist_directory,embeddings,topk=3,collection_name=None):
+def load_vectordb(text, persist_directory,embeddings,topk=10,collection_name=None):
 
     text_splitter = SemanticChunker(load_embeddings())
     doc = text_splitter.create_documents([text])
