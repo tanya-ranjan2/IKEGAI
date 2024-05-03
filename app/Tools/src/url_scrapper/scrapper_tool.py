@@ -15,10 +15,8 @@ def scrapper(query: str, url:str, **kwargs)->str:
     """Returns answer based on the content retrieved from url and `user query`"""
     agent_state=kwargs['state']
     data_sourse=agent_state.config['data_sources']
-    text = scrapper_utils.get_text_from_url(url)
     embeddings = scrapper_utils.load_embeddings()
-    db=scrapper_utils.load_vectordb(text,
-                                    data_sourse['storage_name'],
+    db=scrapper_utils.load_vectordb(data_sourse['storage_name'],
                                     embeddings,
                                     topk=10,
                                     collection_name=data_sourse['collection_name']
