@@ -70,3 +70,30 @@ def uploadpdf(uid,file_path,file_name):
 
     #}})
     logger.info(f"Updated:::{uid}")
+
+@app.task
+def uploadurl(uid, url_path):
+    
+    mongo=mongo_utils.MongoConnect(uri=usecase.uri,db=usecase.db,collection=usecase.collection)
+    status_mongo=mongo_utils.MongoIngestionStatus(uri=usecase.uri,db=usecase.db,collection=usecase.collection)
+    start_time=str(datetime.datetime.now())
+    
+    status_mongo.set_status("PROCESSING",uid,{
+        "doc_name":url_path,
+        "start_time":start_time
+    })
+    
+    logger.info(f"========Started Consumption of {uid}=========")
+    url_vectorizer.convert_url_to_vector(url_path,uid)
+    logger.info(f"=========End Consumption of {uid}=========")
+    print("UID",uid)
+    mongo.update_data_by_id(uid,{'data_sources':{
+        "storage_name":PERSISTANT_DRIVE,
+        "collection_name":uid
+        
+    }})
+    status_mongo.set_status("COMPLETED",uid,{
+        "doc_name": url_path,
+        "end_time":str(datetime.datetime.now())
+    })
+    logger.info(f"Updated:::{uid}")
