@@ -29,7 +29,15 @@ def load_vectordb(persist_directory,embeddings,topk=10,collection_name=None):
     else:
         db=Chroma(persist_directory=persist_directory,embedding_function=embeddings,client=client,collection_name=collection_name)
 
-    retriver=db.as_retriever(search_type="similarity",
-                             search_kwargs={"k": topk}
+    search_kwargs = {
+    "maximal_marginal_relevance": True,
+    "distance_metric": "cos", 
+    "k": topk
+}
+    retriver=db.as_retriever(
+                            search_type="mmr",
+                            #  search_type="similarity",
+                            #  search_kwargs={"k": topk}
+                             search_kwargs=search_kwargs
                              )
     return retriver
