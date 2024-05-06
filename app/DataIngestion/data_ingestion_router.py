@@ -25,6 +25,10 @@ async def create_upload_file(file: UploadFile,idx:str):
     uploadpdf.delay(idx,os.path.join(STORAGE_DRIVE,file.filename))
     return {"filename": file.filename}
 
+@router.post("/uploadurl/{idx}")
+async def create_upload_url(url: str,idx:str):    
+    uploadurl.delay(idx,url)
+    return {"URL is", url}
 
 @router.get("/download/{filename}")
 async def dowload(filename:str):
