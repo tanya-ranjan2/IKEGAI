@@ -6,6 +6,7 @@ import shutil
 from ultralyticsplus import YOLO, render_result
 from PIL import Image
 import io
+import numpy as np
 
 def convert_to_langchain_docs(docs):
     document_format=[]
