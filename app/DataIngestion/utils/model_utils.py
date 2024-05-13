@@ -6,6 +6,7 @@ from langchain.memory import ChatMessageHistory
 from langchain_core.prompts import PromptTemplate
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from dataclasses import asdict
+import azure
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.formrecognizer import DocumentAnalysisClient
 import os
