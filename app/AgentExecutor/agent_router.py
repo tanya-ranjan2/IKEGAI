@@ -118,6 +118,22 @@ def create_upload_file(file: list[UploadFile],idx:str):
         
     return {"filename": [f.filename for f in files]}
 
+@router.post("/uploadurl/{idx}")
+def create_upload_url(url: str,idx:str):
+    config_data=APIconnector.get_usecase_details(idx)
+    all_tool_names=[]
+    for a in config_data["config_manager"]["agents"]:
+        for t in a['tools']:
+            all_tool_names.append(t['tool_name'])
+
+    mongo.set_status("QUEUED",idx,{
+    "doc_name":url,
+    "status":"QUEUED"
+})
+    if 'scrapper' in all_tool_names:
+        uploadurl.delay(idx,url)
+    return {"url is": url}
+
 
 @router.get("/download/{filename}")
 async def dowload(filename:str):
