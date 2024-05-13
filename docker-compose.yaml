@@ -2,46 +2,33 @@ version: '3.4'
 services:
   redis:
     image: redis
+    restart: always
     ports:
-      - "6379:6379"
-  chroma:
-    image: chromadb/chroma
-    ports:
-      - "6062:8000"
-    volumes:
-      - stroage-volume:/chroma/chroma
+      - 6379:6379
   app:
     container_name: app
     build: .
-    command: uvicorn main:app --host 0.0.0.0 --port 6069 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 6069
     volumes:
       - demo-volume:/app
     ports:
       - 6069:6069
     restart: always
-    #depends_on:
-    #  - redis
   celery_worker:
     container_name: celery_worker
     build: .
-    command: celery --app celery_queue worker --loglevel=info --pool=solo  -E --logfile=logs/celery_main.log
+    command: celery --app celery_queue worker --loglevel=debug --pool=solo -E --logfile=logs/celery_main.log
     volumes:
       - demo-volume:/app
-    #depends_on:
-    #  - redis
-    #  - app
+    restart: always
+    depends_on:
+      - app
+      - redis
 volumes:
-  demo-volume:
+ demo-volume:
    #external: true
     driver: local
     driver_opts:
       type: none
       o: bind
       device: ${PWD}/app
-
-  stroage-volume:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${PWD}/stroage
