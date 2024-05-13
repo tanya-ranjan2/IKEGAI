@@ -2,7 +2,6 @@ import requests
 
 def get_usecase_details(uid):
     res=requests.get(f"https://ikegai.southindia.cloudapp.azure.com/solution-manager/v1/useCase/usecase-by-id?id={uid}")
-    print(res.json())
     if res.status_code==200:
         return res.json()['data']
     elif res.status_code==500:

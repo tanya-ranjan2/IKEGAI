@@ -47,6 +47,7 @@ def preprocess(filter_data: list[list], feature_parameters: dict, positive: bool
 # @profile
 def forecast_using_prophet_utils(filter_data: list[tuple], feature_parameters: dict) -> str : 
     try : 
+        print(filter_data)
         data = preprocess(filter_data, feature_parameters)
         data.rename(columns = {'date' : 'ds', feature_parameters['feature'] : 'y'}, inplace = True)
         

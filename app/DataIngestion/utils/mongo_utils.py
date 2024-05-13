@@ -1,11 +1,5 @@
 from pymongo import MongoClient
 
-# MongoDB connection string
-MONGO_URI = "mongodb+srv://ikegai:ikegai%40123456@cluster0.l2apier.mongodb.net"
-
-client = MongoClient(MONGO_URI)
-db = client.celery_tasks
-collection = db.tasks
 
 
 

@@ -318,3 +318,206 @@ class CompartiveAnalysis:
             },
             "followup":followup_qa.content.split('\n')
         }
+
+class AzureDocIntell_WT:
+
+    def __init__(self,api_key,end_point, overlap: bool = True, overlap_size: int = 500, distance_threshold: float = 0.25):
+        credential = AzureKeyCredential(api_key)
+        self.document_analysis_client = DocumentAnalysisClient(end_point, credential)
+        self.overlap = overlap
+        self.overlap_size = overlap_size 
+        self.distance_threshold = distance_threshold
+
+    def table_bounding_regions(self, page_result) -> list:
+        """
+        Args -
+            page_result: Azure Doc Intelligence analysis result for the page
+
+        Returns - List of bounding regions for each table present in the page
+        """
+
+        table_bounding_regions = []
+        for table in page_result.tables:
+            for i in range(len(table.cells)):
+                if table.cells[i].content != "":
+                    start = table.cells[i].bounding_regions[0]
+                    break
+            
+            for i in range(len(table.cells)-1, -1, -1):
+                if table.cells[i].content != "":
+                    end = table.cells[i].bounding_regions[0]
+                    break
+
+            table_bounding_regions.append([start, end])
+
+        return table_bounding_regions
+
+    def position_page_text_and_table(self, page_result, table_regions):
+        """
+        Utilises table bounding regions to position text and tables in order.
+        Args -
+            page_result: Azure Doc Intelligence analysis result for the page
+            table_regions: List of bounding regions for each table present in the page. result of method - table_bounding_regions
+        Returns - 
+            List of Azure Doc Intelligence Paragraph and Table Objects order-wise.
+            Ex - [DocumentParagraph(),DocumentParagraph(),.., DocumentTable(), DocumentParagraph()]
+        """
+        page_paras, isTable, i, pointer = [], False, 0, 0
+
+        while i < len(page_result.paragraphs):
+            if pointer < len(table_regions) and str(page_result.paragraphs[i].bounding_regions[0]) == str(table_regions[pointer][0]):
+                print("TABLE Encountered")
+                isTable = True
+                while isTable and i < len(page_result.paragraphs):
+                    if str(page_result.paragraphs[i].bounding_regions[0]) == str(table_regions[pointer][1]):
+                        print("Table END")  
+                        page_paras.append(page_result.tables[pointer])
+                        pointer += 1
+                        isTable = False
+                    i += 1  
+            
+            if i < len(page_result.paragraphs):
+                page_paras.append(page_result.paragraphs[i])
+                i += 1
+
+        if isTable:
+            print("Table END #")
+            page_paras.append(page_result.tables[pointer])
+        
+        return page_paras
+        
+    def pdf_formatter_WT(self,pdf_path: str, page_no: int) -> list:
+        """
+        Args -
+            pdf_path: str - Path of the pdf file
+            page_no: int - Page number
+        Returns - List of dictionaries containing block (content), page_no, and doc_name details. 
+        """
+
+        with open(pdf_path, "rb") as f:
+            poller = self.document_analysis_client.begin_analyze_document(
+                "prebuilt-layout", document=f, pages = str(page_no + 1)
+            )
+        page_result = poller.result()
+
+        data=[]
+        
+        table_regions = self.table_bounding_regions(page_result) # Bounding regions for each table in a page
+        
+        page_data = self.position_page_text_and_table(page_result, table_regions)
+
+        # Chunking using distance metric
+        top, right, bottom, left, old_content, chunk = None, None, None, None, None, ""
+        for para in page_data :
+            page_number = para.bounding_regions[0].page_number
+            if (type(para) == azure.ai.formrecognizer._models.DocumentParagraph) :
+                if not top :    
+                    top, right, bottom, left = para.bounding_regions[0].polygon
+                    top_x, top_y = top.x, top.y
+                    right_x, right_y = right.x, right.y
+                    bottom_x, bottom_y = bottom.x, bottom.y
+                    left_x, left_y = left.x, left.y  
+                    old_content = para.content
+                    chunk += old_content
+                else :
+                    new_top, new_right, new_bottom, new_left = para.bounding_regions[0].polygon
+        
+                    # print("new --> ", new_top, new_right, new_bottom, new_left)
+                    # print("old --> ", top, right, bottom, left)
+        
+                    new_top_x, new_top_y = new_top.x, new_top.y
+                    new_right_x, new_right_y = new_right.x, new_right.y
+                    new_bottom_x, new_bottom_y = new_bottom.x, new_bottom.y
+                    new_left_x, new_left_y = new_left.x, new_left.y  
+                    dist = abs(left_y - new_top_y) + abs(bottom_y - new_right_y)
+        
+                    if dist >= self.distance_threshold :
+                        # print("chunk --> ", chunk)
+                        _temp = {}
+                        _temp['block'] = chunk
+                        _temp['page_no']= page_number
+                        _temp['doc_name']= pdf_path 
+                        data.append(_temp)
+                        
+                        if self.overlap :
+                            chunk = old_content[-self.overlap_size:] + para.content
+                        else :
+                            chunk = para.content
+                    else :
+                        chunk += " \n" + para.content
+        
+                    top, right, bottom, left = new_top, new_right, new_bottom, new_left
+                    top_x, top_y = top.x, top.y
+                    right_x, right_y = right.x, right.y
+                    bottom_x, bottom_y = bottom.x, bottom.y
+                    left_x, left_y = left.x, left.y  
+            
+                    # print(dist, para.content, "|", old_content, "\n")
+                    old_content = para.content
+
+            elif type(para) == azure.ai.formrecognizer._models.DocumentTable :
+                # print("chunk --> ", chunk)
+                if chunk != "": 
+                    _temp = {}
+                    _temp['block'] = chunk
+                    _temp['page_no']= page_number
+                    _temp['doc_name']= pdf_path 
+                    data.append(_temp)
+
+                if old_content :
+                    df = old_content[-self.overlap_size:] + '\n' + pdf_utils.table_to_dataframe(para).to_markdown(index = False)
+                else :
+                    df = pdf_utils.table_to_dataframe(para).to_markdown(index = False)
+                # print("table -->", df)
+                _temp = {}
+                _temp['block'] = df
+                _temp['page_no']= page_number
+                _temp['doc_name']= pdf_path 
+                data.append(_temp)
+                top, right, bottom, left, old_content, chunk = None, None, None, None, None, ""
+
+        if chunk != "":     
+            _temp = {}
+            _temp['block'] = chunk
+            _temp['page_no']= page_number
+            _temp['doc_name']= pdf_path 
+            data.append(_temp)
+
+        # print(data)       
+        return data
+
+class ConvertToVector_WT:
+    def __init__(self,embeddings,azure_forms) -> None:
+        self.embeddings=Embeddings(embeddings).load()
+        self.azure_forms=azure_forms
+        self.client = chromadb.HttpClient(**asdict(ChromaClient()),settings=Settings(allow_reset=True, anonymized_telemetry=False))
+        
+    def convert_to_vector_wt(self,path):        
+        scanned_flag,_ = pdf_utils.check_if_scanned_full_doc(path=path)
+        docs = []
+        pdf_doc = fitz.open(path)
+
+        if scanned_flag:
+            print("Entered Into Scanned")
+            for page_no in range(pdf_doc.page_count):
+                data = self.azure_forms.pdf_formatter_WT(path, page_no)
+                docs.extend(data)
+        
+        else:
+            hasTables = pdf_utils.check_if_hasTables(path)
+            for page_no in range(pdf_doc.page_count):
+                if hasTables[page_no] == 0:
+                    data = pdf_utils.extract_doc_page(pdf_doc, page_no, path)
+
+                    docs.extend(data)
+                else:
+                    data = self.azure_forms.pdf_formatter_WT(path, page_no)
+                    docs.extend(data)
+                # print(data, end = "\n----------------\n")
+
+        document_format=pdf_utils.convert_to_langchain_docs(docs)    
+        # print(document_format)
+        vdb=Chroma(embedding_function=self.embeddings,persist_directory=PERSISTANT_DRIVE,client=self.client,collection_name=store_name)
+        vdb=vdb.from_documents(document_format,embedding=self.embeddings,persist_directory=PERSISTANT_DRIVE,collection_name=store_name,client=self.client)    
+        vdb.persist()
+        

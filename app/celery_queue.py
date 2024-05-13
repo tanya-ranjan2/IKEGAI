@@ -31,8 +31,11 @@ app=Celery(**asdict(CeleryQueue()))
 #app = Celery('celery_queue', broker='redis://redis/0', backend='redis://redis/0')
 
 
-azure_form= model_utils.AzureDocIntell(**asdict(AzureDocumentInfo()))
-vectorizer=model_utils.ConvertToVector(EMBEDDING,azure_form)
+# azure_form= model_utils.AzureDocIntell(**asdict(AzureDocumentInfo()))
+# vectorizer=model_utils.ConvertToVector(EMBEDDING,azure_form)
+
+azure_form= model_utils.AzureDocIntell_WT(**asdict(AzureDocumentInfo()))
+vectorizer=model_utils.ConvertToVector_WT(EMBEDDING,azure_form)
 usecase=UseCaseMongo()
 
 

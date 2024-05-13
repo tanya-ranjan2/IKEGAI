@@ -59,7 +59,7 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
         llm=llmops.llmbuilder(MODEL_NAME)
         agents=helper.create_agents(config_data)
         if len(agents)==1:
-            agent=helper.create_agents(config_data)[0]
+            agent=agents[0]
             session.sessions[uuids]={
                 "type":'agent',
                 "obj":agent

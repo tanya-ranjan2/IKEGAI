@@ -26,6 +26,7 @@ def get_agent_details(json_data:dict)->dict:
             "tools":get_tools(agent['tools'])
         })
     return agent_details
+
 def get_tools(tool_data:dict) ->list:   
     
     return [tool['tool_name'] for tool in tool_data]
