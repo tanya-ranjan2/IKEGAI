@@ -10,6 +10,7 @@ from azure.core.credentials import AzureKeyCredential
 from azure.ai.formrecognizer import DocumentAnalysisClient
 import os
 import json
+import fitz
 
 from DataIngestion.utils import pdf_utils
 from _temp.config import OpenAIConfig, ChromaClient,PERSISTANT_DRIVE
