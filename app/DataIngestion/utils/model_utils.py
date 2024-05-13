@@ -492,7 +492,7 @@ class ConvertToVector_WT:
         self.azure_forms=azure_forms
         self.client = chromadb.HttpClient(**asdict(ChromaClient()),settings=Settings(allow_reset=True, anonymized_telemetry=False))
         
-    def convert_to_vector_wt(self,path):        
+    def convert_to_vector_wt(self,path,store_name):        
         scanned_flag,_ = pdf_utils.check_if_scanned_full_doc(path=path)
         docs = []
         pdf_doc = fitz.open(path)
