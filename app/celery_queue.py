@@ -34,8 +34,8 @@ app=Celery(**asdict(CeleryQueue()))
 # azure_form= model_utils.AzureDocIntell(**asdict(AzureDocumentInfo()))
 # vectorizer=model_utils.ConvertToVector(EMBEDDING,azure_form)
 
-azure_form= model_utils.AzureDocIntell_WT(**asdict(AzureDocumentInfo()))
-vectorizer=model_utils.ConvertToVector_WT(EMBEDDING,azure_form)
+azure_form= model_utils.AzureDocIntell(**asdict(AzureDocumentInfo()))
+vectorizer=model_utils.ConvertToVector(EMBEDDING,azure_form)
 usecase=UseCaseMongo()
 
 
@@ -53,7 +53,7 @@ def uploadpdf(uid,file_path,file_name):
     })
     
     logger.info(f"========Started Consumption of {uid}=========")
-    vectorizer.convert_to_vector_wt(file_path,uid)
+    vectorizer.convert_to_vector(file_path,uid)
     logger.info(f"=========End Consumption of {uid}=========")
     print("UID",uid)
     mongo.update_data_by_id(uid,{'data_sources':{
