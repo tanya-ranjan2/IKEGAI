@@ -45,8 +45,8 @@ class ChromaClient:
 @dataclass
 class CeleryQueue:
     name:str='celery_queue'
-    broker:str='redis://{URI}:6379/0'
-    backend:str="redis://{URI}:6379/1"
+    broker:str=f'redis://{URI}:6379/0'
+    backend:str=f"redis://{URI}:6379/1"
     
     
 @dataclass
