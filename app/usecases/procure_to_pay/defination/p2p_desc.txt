@@ -1,0 +1,31 @@
+###sqlite tables, with their properties:        
+# Table name = P2P_activity_invoices (caseKey, GR_time, Invoice_time, PO_time, PR_time, SL_invoice_time, GR, Invoice, PO, PR, 'SL_invoice')
+Here, 
+PO means Purchase order
+GR is Good Receipt
+PR is Purchase request
+'SL_Invoice' is Sub ledger Invoice
+
+"P2P_activity_invoices" table contains SAP payment to pay transactional data with event time and flags indicating whether a certain event has occurred (e.g. GR, Invoice, PO, PR, SL Invoice). The column "caseKey" indicates a unique identifier for each transaction.
+
+Below are the description of each column of the table:
+
+"GR_time": The "GR_time" column shows the date and time when the goods receipt was processed. 
+"GR": It contains enum value 0 or 1. If a value of 1 is present in the "GR" column, it means that the goods receipt has been processed for that transaction.
+
+"Invoice_time": The "Invoice_time" column shows the date and time when the invoice was processed. 
+"Invoice": It contains enum value 0 or 1. If a value of 1 is present in the "Invoice" column, it means that the invoice has been processed for that transaction.
+
+"PO_time": The "PO_time" column shows the date and time when the purchase order was created. 
+"PO": It contains enum value 0 or 1. If a value of 1 is present in the "PO" column, it means that the purchase order has been created for that transaction.
+
+"PR_time": The "PR_time" column shows the date and time when the purchase request was created. 
+"PR": It contains enum value 0 or 1. If a value of 1 is present in the "PR" column, it means that the purchase request has been created for that transaction.
+
+"SL_invoice_time": The "SL_invoice_time" column shows the date and time when the Purchase SL invoice was processed. 
+"SL_invoice": It contains enum value 0 or 1. If a value of 1 is present in the "SL_invoice" column, it means that the Purchase SL invoice has been processed for that transaction.
+
+To find invoices that have been posted in the Purchase SL without a PO reference, we can query for transactions where the "SL_invoice" column is equal to 1 and the "PO" column is equal to 0.
+To find invoices that have been received without a scheduled GR, we can query for transactions where the "Invoice" column is equal to 1 and the "GR" column is equal to 0.
+Calculate the aging of GR/IR transactions by subtracting the GR time from the invoice time for each case key. Then, segregate the transactions into different buckets based on their age, with transactions less than 90 days old in one bucket, transactions between 90 and 180 days old in another bucket, and transactions over 180 days old in a third bucket.
+
