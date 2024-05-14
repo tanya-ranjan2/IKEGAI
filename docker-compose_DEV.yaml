@@ -15,14 +15,12 @@ services:
   app:
     container_name: app
     build: .
-    command: uvicorn main:app --host 0.0.0.0 --port 6069 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 6069
     volumes:
       - demo-volume:/app
     ports:
       - 6069:6069
     restart: always
-    depends_on:
-      - redis
   celery_worker:
     container_name: celery_worker
     build: .
