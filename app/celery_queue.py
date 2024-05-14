@@ -22,6 +22,7 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 redis = Redis(**asdict(RedisBroker()))
+print("IS REDIS RUNNING--->",redis.ping())
 redis.flushall()
 redis.flushdb()
 
