@@ -41,8 +41,10 @@ class PromptMaker:
             model="LH-GPT",
             messages=messages
         )
-        # print( model_response["choices"][0]["message"])
+      
+        print(model_response.choices[0].message.content)
         print(100*"+")
+
         return model_response.choices[0].message
 
     def get_sql_code_from_model_response(self, resp: str):
@@ -242,6 +244,7 @@ class PromptMaker:
             tabular_answer = None
             raw_table = []
             answer = None
+            chart_config = {}
             # if _message := psm.get_updated_current_session_prompt(
             #     prompt=self.prompt
             # ):
@@ -289,6 +292,7 @@ class PromptMaker:
                 "answer": answer,
                 "session_id": psm.get_session_id(),
             }
+        
 
 
 class PromptSessionManager:

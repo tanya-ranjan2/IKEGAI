@@ -327,7 +327,7 @@ class Agent:
         #last_stable_output=out.content
             while "function_call" in out.additional_kwargs:
                 if self.verbose:
-                    print("Enter tool call")
+                    print("Enter tool call",out.additional_kwargs)
                 if "function_call" in out.additional_kwargs:
                     tool_name=out.additional_kwargs['function_call']['name']
                     if tool_name==self.tool_calls or tool_name not in self.tools_action:

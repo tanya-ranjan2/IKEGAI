@@ -13,10 +13,12 @@ from Tools.src.structured_tools.sql_utils import PromptMaker
 def sql_generator(query:str,**kwargs)->list:
     """Generate the SQL query from natural language `user query`. Run sql_executor after this"""
     agent_state=kwargs['state']
+    # print(agent_state)
     data_source=agent_state.config['data_sources']
     db_path = data_source["db_path"]
     def_path = data_source["db_def_path"]
     db_type = data_source["db_type"]
+    query = agent_state.state["input"]
     print(100*"=")
     print(kwargs)
     print(f"{query=}, {agent_state=},{db_path=},{def_path=}" )
