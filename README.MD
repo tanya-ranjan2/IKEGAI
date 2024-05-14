@@ -1,28 +1,51 @@
+
 ### to Start the docker container
 
 Linux
+for `PROD` envirormnet
 ```
 docker-compose up -d 
 ```
 
+for `DEV` envirormnet
+```
+docker-compose -f docker-compose_DEV.yaml up -d 
+```
 
 MacOS
+
+for `PROD` envirormnet
 ```
 docker compose up -d 
 ```
 
-### To force Rebuild the image
+for `DEV` envirormnet
+```
+docker compose -f docker-compose_DEV.yaml up -d 
+```
 
+### To force Rebuild the image
 Linux
+for `PROD` envirormnet
 ```
 docker-compose up -d --build
 ```
 
+for `DEV` envirormnet
+```
+docker-compose -f docker-compose_DEV.yaml up -d --build
+```
 
 MacOS
+
+for `PROD` envirormnet
 ```
 docker compose up -d --build
+```
 
+for `DEV` envirormnet
+```
+docker compose -f docker-compose_DEV.yaml up -d --build
 ```
 
 ### To Stop  the containers
