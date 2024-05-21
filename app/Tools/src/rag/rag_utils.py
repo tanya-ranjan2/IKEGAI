@@ -3,7 +3,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from _temp.config import ChromaClient
 from dataclasses import dataclass,asdict
-
+from _temp.config import EMBEDDING
 '''
 __import__('pysqlite3')
 import sys
@@ -15,7 +15,7 @@ from chromadb.config import Settings
 
 
 def load_embeddings():
-    embeddings=HuggingFaceEmbeddings(model_name="intfloat/e5-base-v2")
+    embeddings=HuggingFaceEmbeddings(EMBEDDING)
     return embeddings
 
 def load_vectordb(persist_directory,embeddings,topk=2,collection_name=None):
