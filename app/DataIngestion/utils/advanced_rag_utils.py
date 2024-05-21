@@ -17,6 +17,8 @@ from Tools.schema.advanced_rag_schema import MetaDataOfDocuments
 from _temp.config import UseCaseMongo, PERSISTANT_DRIVE
 from DataIngestion.utils import mongo_utils
 import datetime
+from DataIngestion.schema.adv_rag_schemas import MetaDataOfDocuments, RerankingSchema
+    
 
 usecase = UseCaseMongo()
 
