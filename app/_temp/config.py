@@ -22,7 +22,10 @@ elif ENV=="DEV":
 #################################
 PERSISTANT_DRIVE="VectorDB"
 STORAGE_DRIVE="Files"
-EMBEDDING="intfloat/e5-base-v2"
+if ENV=="PROD":
+    EMBEDDING="intfloat/e5-base-v2"
+elif ENV=="DEV":
+    EMBEDDING="mixedbread-ai/mxbai-embed-large-v1"
 
 
 
