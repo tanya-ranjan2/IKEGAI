@@ -3,7 +3,7 @@ from langchain_openai.chat_models import AzureChatOpenAI
 from langchain_community.vectorstores import Chroma
 from langchain_openai import AzureOpenAIEmbeddings
 from langchain_community.docstore.document import Document
-from _temp.config import ChromaClient
+from _temp.config import ChromaClient,EMBEDDING
 from dataclasses import dataclass,asdict
 from langchain_community.embeddings import HuggingFaceEmbeddings
 
@@ -17,7 +17,7 @@ sys.modules['sqlite3']= sys.modules.pop('pysqlite3')
 '''
 
 def load_embeddings():
-    embeddings=HuggingFaceEmbeddings(model_name="intfloat/e5-base-v2")
+    embeddings=HuggingFaceEmbeddings(EMBEDDING)
     return embeddings
     
 def load_vectordb(persist_directory,embeddings,topk=10,collection_name=None):
