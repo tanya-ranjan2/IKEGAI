@@ -88,12 +88,12 @@ class MongoConnect:
         else:
             push2db["data_sources"]=record["data_sources"]
             
-        if "vectorDB" not in record["data_sources"]:
+        if "vectorDB" not in push2db["data_sources"]:
             push2db["data_sources"]["vectorDB"]=[]
         else:
             push2db["data_sources"]["vectorDB"]=record["data_sources"]["vectorDB"]
             
-        if "meta_data" not in record["data_sources"]:
+        if "meta_data" not in push2db["data_sources"]:
             push2db["data_sources"]["meta_data"]=[]
         else:
             push2db["data_sources"]["meta_data"]=record["data_sources"]["meta_data"]
