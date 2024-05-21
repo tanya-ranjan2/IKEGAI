@@ -13,7 +13,6 @@ import uuid
 
 
 from Tools.src.advanced_rag.utils.prompt_utils import get_meta_extractor
-from Tools.schema.advanced_rag_schema import MetaDataOfDocuments 
 from _temp.config import UseCaseMongo, PERSISTANT_DRIVE
 from DataIngestion.utils import mongo_utils
 import datetime
