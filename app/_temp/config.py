@@ -76,7 +76,7 @@ class CeleryQueue:
     
 @dataclass
 class RedisBroker:
-    host:str="{URI}"
+    host:str=f"{URI}"
     #host:str="127.0.0.1"
     port:int=6379
     username:str="default"
