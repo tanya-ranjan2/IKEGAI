@@ -30,7 +30,7 @@ def load_vectordb(persist_directory,embeddings,topk=2,collection_name=None):
 def make_context(docs):
     context=""
     for a in docs:
-        context+=a.page_content
+        context+=a.page_content+"\n"
     return context
 
 

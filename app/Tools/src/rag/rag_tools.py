@@ -32,8 +32,8 @@ def rag(query:str,topk:int=3,**kwargs)->list:
 
     agent_state.state['sources']=all_refs
     agent_state.state['context']= all_docs
-    print(rag_utils.make_context(all_docs))
-    return rag_utils.make_context(all_docs)
+    context="\n\n".join(all_docs)
+    return context
     #return "Search VectorDB"
     
 
