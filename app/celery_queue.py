@@ -71,7 +71,7 @@ def uploadpdf(uid,file_path,file_name):
         
     # }})
     print(uid)
-    mongo.add_meta_data(idx = uid, meta_data = meta_data)
+    mongo.add_meta_data(idx = uid, meta_data = meta_data,storage_name=PERSISTANT_DRIVE)
     status_mongo.set_status("COMPLETED",uid,{
         "doc_name":file_name,
         "end_time":str(datetime.datetime.now())
