@@ -201,7 +201,7 @@ class MetaDataRichDocumentProcessor:
         metastorage=[]
         data_processed={}
         coll_name=[]
-        idx = uuid.uuid4()
+        idx = str(uuid.uuid4())
         # for idx,j in enumerate(doc_paths):
         if doc_paths.endswith(".pdf"):
             pg_data=DocumentProcessor(doc_paths,end_point=self.azure_doc_creds.end_point,api_key=self.azure_doc_creds.api_key)
