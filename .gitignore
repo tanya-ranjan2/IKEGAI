@@ -10,3 +10,9 @@ stroage/*
 *.log
 temp/*
 app/temp/*
+app/.venv
+app/logs/*.log
+app/advance_rag_agent.py  
+app/*.pdf
+app/*.ipynb
+app/test_code.py

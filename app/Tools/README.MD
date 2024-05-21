@@ -183,3 +183,7 @@ you will get a json Format like below. You can make changes to the same
     ]
 }
 ```
+
+after that go to [IKE.GAI UseCase Management Services](https://ikegai.southindia.cloudapp.azure.com/solution-manager/docs#/Usecase/get_usecase_v1_useCase__get) and register your tool under `General -> register tool`.
+
+> If you are getting any error while running `register_tool.py` then you can just follow the same structure shown above, create a JSON schema for your tool and register the same in [IKE.GAI UseCase Management Services](https://ikegai.southindia.cloudapp.azure.com/solution-manager/docs#/Usecase/get_usecase_v1_useCase__get).

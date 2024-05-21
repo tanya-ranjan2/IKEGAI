@@ -19,7 +19,7 @@ Purchase order quantity [purchase_order_quantity]: This column specifies the qua
 Unit of measure [unit_of_measure]: This column specifies the unit of measure for the item being procured, such as kilograms, liters, or units.
 Unit price [unit_price]: This column specifies the price of a single unit of the item being procured, such as the cost per unit, cost per kilogram, or cost per liter.
 Unit price quantity[unit_price_quantity]: This column specifies the quantity for which the unit price is specified.
-Total order value [total_order_value]: This column specifies the total cost of procuring the item, which is calculated by multiplying the quantity by the unit price.
+Total order value [total_order_value]: This column specifies the total cost of procuring the item, which is calculated by multiplying the quantity by the unit price. This can also be considered as spend.
 Purchasing document category[purchasing_document_category]: This column specifies the category of the purchasing document, such as goods receipt or invoice receipt.
 Spot buy[spot_buy]: This column specifies whether the procurement order was a spot buy or not.
 Category ID[category_id]: This column specifies the category to which the item belongs.

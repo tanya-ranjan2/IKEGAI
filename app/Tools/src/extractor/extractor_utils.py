@@ -339,7 +339,7 @@ def extract_feature_keywords_for_sql_query(user_query: str, feature_extractor_in
     examples = [
         {
             "query" : "what will be the revenue for next 1 month using quantity",
-            "feature":"sales",
+            "feature":"revenue",
             "filter": '[["quantity","all"]]'
         },
         {
@@ -348,7 +348,7 @@ def extract_feature_keywords_for_sql_query(user_query: str, feature_extractor_in
             "filter": '[]'
         },
         {
-            "query" : "what will be the total order value of next two months for packaging material of category l1",
+            "query" : "what will be the profit of next two months for packaging material of category l1",
             "feature":"profit",
             "filter": '[["category l1","packaging material"]]'
         },
@@ -386,7 +386,22 @@ def extract_feature_keywords_for_sql_query(user_query: str, feature_extractor_in
             "query" : "unit price for next 2 years",
             "feature":"unit price",
             "filter": '[]'
-        }
+        }, 
+        {
+            "query" : " predict next 2 months spend for vendor name zzlonp based on last 3 years",
+            "feature":"spend",
+            "filter": '[["vendor name", "zzlonp"]]'
+        },
+        {
+            "query" : " total order value where vendor name = vtcbqj",
+            "feature":"spend",
+            "filter": '[["vendor name", "vtcbqj"]]'
+        },   
+        {
+            "query" : " predict spend for next 3 months based on zier bags from category l3",
+            "feature":"spend",
+            "filter": '[["category l3", "zier bags"]]'
+        }   
     ]
 
     examples += feature_extractor_injection

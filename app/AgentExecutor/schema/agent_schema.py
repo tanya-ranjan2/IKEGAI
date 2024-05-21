@@ -9,3 +9,4 @@ class AgentExecute(BaseModel):
     uid:str
     query:str
     session_id:str
+    props:dict

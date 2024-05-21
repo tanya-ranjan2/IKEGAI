@@ -28,6 +28,25 @@ class OpenAIConfig:
     azure_deployment:str="test"
     api_version:str="2024-02-15-preview"
     
+@dataclass 
+class OpenAIEmbeddingConfig: 
+    azure_endpoint:str="https://openai-lh.openai.azure.com/",
+    openai_api_key:str="312ff50d6d954023b8748232617327b6",  
+    deployment:str="LH-embedding", 
+    openai_api_version:str="2023-06-01-preview",
+    openai_api_type:str= "azure"
+
+@dataclass 
+class MistralConfig: 
+    api_key:str="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"
+    temperature:int=0
+    model_name:str="mixtral-8x7b-32768"
+    
+@dataclass 
+class Llama3Config: 
+    api_key:str="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"
+    temperature:int=0
+    model_name:str="llama3-70b-8192"
     
 
 @dataclass
@@ -51,7 +70,7 @@ class CeleryQueue:
     
 @dataclass
 class RedisBroker:
-    host:str=f'{URI}'
+    host:str="20.41.249.147"
     #host:str="127.0.0.1"
     port:int=6379
     username:str="default"

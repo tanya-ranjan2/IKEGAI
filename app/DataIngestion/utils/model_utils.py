@@ -10,11 +10,14 @@ import azure
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.formrecognizer import DocumentAnalysisClient
 import os
-import json
+import json 
+import chromadb  
 import fitz
 
 from DataIngestion.utils import pdf_utils
-from _temp.config import OpenAIConfig, ChromaClient,PERSISTANT_DRIVE
+from _temp.config import OpenAIConfig, ChromaClient,PERSISTANT_DRIVE, UseCaseMongo 
+
+usecase=UseCaseMongo()
 
 '''
 __import__('pysqlite3')
@@ -493,7 +496,7 @@ class ConvertToVector_WT:
         self.embeddings=Embeddings(embeddings).load()
         self.azure_forms=azure_forms
         self.client = chromadb.HttpClient(**asdict(ChromaClient()),settings=Settings(allow_reset=True, anonymized_telemetry=False))
-        
+
     def convert_to_vector_wt(self,path,store_name):        
         scanned_flag,_ = pdf_utils.check_if_scanned_full_doc(path=path)
         docs = []

@@ -1,0 +1,121 @@
+{
+    "id": "test_usecase_adv_rag",
+    "config_manager": {
+        "llm_params": {
+            "llm_type": "commercial",
+            "llm_name": "Azure OpenAI",
+            "model_version": "2024-02-15-preview"
+        },
+        "agents": [
+            {
+                "agent_id": "A1",
+                "name": "DocumentAgent",
+                "run_para-llel": false,
+                "tools": [
+                    {
+                        "tool_id": "ea41cf34-ecd4-43f3-b9a2-5ec8b01bcbe7",
+                        "tool_name": "Advanced_rag_tool",
+                        "tool_desc": "Generate a competitive analysis of multiple documents based on the `user_query`",
+                        "fields": [{
+                            "name": "user_query",
+                            "desc": "original `user input`",
+                            "type": "text",
+                            "value": null,
+                            "isMandatory": true
+                          }],
+                        "prompt": {
+                            "role": "string",
+                            "base_prompt": "string",
+                            "instruction_prompt": "string",
+                            "output_prompt": {
+                                "tone": "friendly",
+                                "rules": "string",
+                                "verification_criteria": "string"
+                            }
+                        },
+                        "isSpecial": false,
+                        "additionalProp1": {}
+                    }
+                ]
+            }
+        ]
+    },
+    "data_sources": {
+        "vectorDB": [
+            {
+                "storage_name": "VectorDB",
+                "collection_name": "test_usecase_adv_rag_0d2f559a-df6d-4b3f-866a-9a6099530eda"
+            },
+            {
+                "storage_name": "VectorDB",
+                "collection_name": "test_usecase_adv_rag_1da2225c-fa48-4bd6-b0d0-4d9acd808749"
+            },
+            {
+                "storage_name": "VectorDB",
+                "collection_name": "test_usecase_adv_rag_537cd4a5-3f10-450f-857c-92fb258f0370"
+            },
+            {
+                "storage_name": "VectorDB",
+                "collection_name": "test_usecase_adv_rag_7a51ad2c-2813-4481-b82e-7e2a68b5a7f7"
+            }
+        ],
+            "meta_data": [
+            {
+                "organization": "Financial Statements and Supplements Notes",
+                "period": "continued",
+                "subject": "Goodwill and other intangible assets",
+                "topics": [],
+                "filename": "Files\\shell_annual_report_pg273.pdf",
+                "collection_name": "test_usecase_adv_rag_0d2f559a-df6d-4b3f-866a-9a6099530eda",
+                "storage_name": "VectorDB"
+            },
+            {
+                "organization": "JSW Hydro Energy Limited",
+                "period": "17.02.2020",
+                "subject": "PURCHASE ORDER",
+                "topics": [],
+                "filename": "Files\\PO_Sample_2_edited.pdf",
+                "collection_name": "test_usecase_adv_rag_1da2225c-fa48-4bd6-b0d0-4d9acd808749",
+                "storage_name": "VectorDB"
+            },
+            {
+                "organization": "JSW Hydro Energy Limited",
+                "period": "",
+                "subject": "PURCHASE ORDER",
+                "topics": [],
+                "filename": "Files\\PO_Sample_2_edited.pdf",
+                "collection_name": "test_usecase_adv_rag_537cd4a5-3f10-450f-857c-92fb258f0370",
+                "storage_name": "VectorDB"
+            },
+            {
+                "organization": "Financial Statements and Supplements",
+                "period": "2022",
+                "subject": "Goodwill and other intangible assets",
+                "topics": [],
+                "filename": "Files\\shell_annual_report_pg273.pdf",
+                "collection_name": "test_usecase_adv_rag_7a51ad2c-2813-4481-b82e-7e2a68b5a7f7",
+                "storage_name": "VectorDB"
+            }
+        ]
+    },
+    "usecase_info": {
+        "name": "Test Architecture",
+        "desc": "This is a test Architecture",
+        "func": "string",
+        "logo": "string",
+        "publish": "public",
+        "stage": "string"
+    },
+    "prompt_manager": {
+        "DocumentAgent": {
+            "role": "librarian",
+            "base_prompt": "You search documents for answers and give the answers, always use the tools to search documents.\n Use all the tools required without asking the user.\n Use all possible search tools and finally merge the serch results to respond.\n Do not Change the `user input` for the for the search tools.",
+            "instruction_prompt": "string",
+            "output_prompt": {
+                "tone": "friendly",
+                "rules": "string",
+                "verification_criteria": "string"
+            }
+        }
+    }
+}

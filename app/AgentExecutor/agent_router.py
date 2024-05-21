@@ -12,11 +12,12 @@ import os
 
 #<CODEBLOCk>
 from utils import parser,llmops,APIconnector
-from celery_queue import uploadpdf
+from celery_queue import uploadpdf,uploadurl
 
 from _temp.config import STORAGE_DRIVE,UseCaseMongo
 from DataIngestion.utils import pdf_utils,model_utils,mongo_utils
 
+from EvaluationMetrics.controllers.evaluate_llm import get_LLM_costing, get_scores, initialize_model
 
 #<CODEBLOCk>
 router=APIRouter(prefix='/agent',tags=["agent_execution"])
@@ -35,9 +36,11 @@ def get_agent_details(uid):
 
 @router.post("/execute_agent/")
 def execute_agent(agent_info:agent_schema.AgentExecute):
-    MODEL_NAME="azureopenai"
-    config_data=APIconnector.get_usecase_details(agent_info.uid)
-    #print("CONFIG",config_data)
+    config_data=APIconnector.get_usecase_details(agent_info.uid) 
+    # config_data = test_data 
+    print("CONFIG",config_data)
+    print(config_data["config_manager"]["llm_params"]["llm_name"])
+    MODEL_NAME = config_data["config_manager"]["llm_params"]["llm_name"]
     if 'is_direct_api' in config_data and 'api_url' in config_data:
         #print("API_URL",config_data['api_url'])
         if config_data['is_direct_api']:
@@ -78,9 +81,32 @@ def execute_agent(agent_info:agent_schema.AgentExecute):
     prompt_token=metadata["Tokens"]["prompt_tokens"]
     completion_token=metadata["Tokens"]["completion_tokens"]
     user_id=""
-    ground_truth=""
-    res=APIconnector.send_eval(agent_info.uid,user_id,agent_info.query,out,ground_truth,prompt_token,completion_token,MODEL_NAME)
-    print("RESPONCE",res)
+    ground_truth= None
+    if 'context' in metadata:
+        context = [metadata['context']]
+        retrieval_context = metadata['context']
+    else:
+        context = None  
+        retrieval_context = None
+         
+    custom_model = llmops.llmbuilder(MODEL_NAME)
+    #custom_model = initialize_model(llm_evaluate.model_name)
+    status, scores, definitions, message_for_scores = get_scores(custom_model, agent_info.query, 
+                            out, ground_truth, retrieval_context, context)
+    
+    cost, status, message_for_cost = get_LLM_costing(prompt_token, completion_token, MODEL_NAME)
+    
+    evaluation_scores = {
+        "message": {"message_for_scores": message_for_scores, "message_for_cost": message_for_cost},
+        "status": status,
+        "data": {"scores": scores, "cost": cost, 
+                    "definitions" : definitions, "model_name" : MODEL_NAME},
+    }
+    
+    res = APIconnector.send_eval(agent_info.uid,user_id,agent_info.query,out,ground_truth,
+                               prompt_token,completion_token,MODEL_NAME, evaluation_scores)
+    print("RESPONSE",res)
+    
     #print({"output":out,"metadata":metadata,"followup":followup})
     return {"output":out,"metadata":metadata,"followup":followup}
 
@@ -113,7 +139,8 @@ def create_upload_file(file: list[UploadFile],idx:str):
             "status":"QUEUED",
             "file_path":os.path.join(STORAGE_DRIVE,file.filename)
         })
-        if 'rag' in all_tool_names:
+        # print(all_tool_names)
+        if 'rag' in all_tool_names or 'Advanced_rag_tool' in all_tool_names:
             uploadpdf.delay(idx,os.path.join(STORAGE_DRIVE,file.filename),file.filename)
         
     return {"filename": [f.filename for f in files]}

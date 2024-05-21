@@ -24,7 +24,7 @@ def rag(query:str,topk:int=3,**kwargs)->list:
     info_list=[{"page":m['page'],"path":m["path"].split("/")[-1]} for m in reference]
 
     agent_state.state['sources']=info_list
-    #agent_state.state['context']=rag_utils.make_context(documents)
+    agent_state.state['context']= [i.page_content for i in documents]
     print(rag_utils.make_context(documents))
     return rag_utils.make_context(documents)
     #return "Search VectorDB"

@@ -4,18 +4,16 @@ services:
     image: redis
     ports:
       - "6379:6379"
-    restart: always
   chroma:
     image: chromadb/chroma
     ports:
       - "6062:8000"
     volumes:
       - stroage-volume:/chroma/chroma
-    restart: always
   app:
     container_name: app
     build: .
-    command: uvicorn main:app --host 0.0.0.0 --port 6069
+    command: uvicorn main:app --host 0.0.0.0 --port 6069 --reload
     volumes:
       - demo-volume:/app
     ports:
@@ -26,12 +24,12 @@ services:
   celery_worker:
     container_name: celery_worker
     build: .
-    command: celery --app celery_queue worker --loglevel=info --pool=solo -E --logfile=logs/celery_main.log
+    command: celery --app celery_queue worker --loglevel=info --pool=solo  -E --logfile=logs/celery_main.log
     volumes:
       - demo-volume:/app
-    depends_on:
-      - redis
-      - app
+    #depends_on:
+    #  - redis
+    #  - app
 volumes:
   demo-volume:
    #external: true

@@ -23,45 +23,49 @@ def extract_keywords(user_query: str, default_days: int = 5, db_path: str = "dat
     with open(meta_data_path, "r+") as f: 
         meta_data = f.read()
 
-    extracted_feature = extract_feature_keywords_for_sql_query(user_query = user_query, meta_data = meta_data) 
-    extracted_date = extract_date_keywords(user_query = user_query, default_days = default_days)
+    try : 
+        extracted_feature = extract_feature_keywords_for_sql_query(user_query = user_query, meta_data = meta_data) 
+        extracted_date = extract_date_keywords(user_query = user_query, default_days = default_days)
 
-    # ? remove date filters from the list 
-    restricted_entity, new_filter = {"month", "year", "week", "quarter", "fortnight", "day", "date"}, []
-    if extracted_feature["filter"] :
-        for filter_list in extracted_feature["filter"] : 
-            flag = True
-            if type(filter_list) == list :
-                for entity in restricted_entity : 
-                    for keyword in filter_list :  
-                        if entity in keyword.lower() :
-                            flag = False 
+        # ? remove date filters from the list 
+        restricted_entity, new_filter = {"month", "year", "week", "quarter", "fortnight", "day", "date"}, []
+        if extracted_feature["filter"] :
+            for filter_list in extracted_feature["filter"] : 
+                flag = True
+                if type(filter_list) == list :
+                    for entity in restricted_entity : 
+                        for keyword in filter_list :  
+                            if entity in keyword.lower() :
+                                flag = False 
 
-                if flag : 
-                    new_filter.append(filter_list)
+                    if flag : 
+                        new_filter.append(filter_list)
 
-    extracted_feature = {
-        "feature" : extracted_feature["feature"], 
-        "filter" : new_filter
-    }
+        extracted_feature = {
+            "feature" : extracted_feature["feature"], 
+            "filter" : new_filter
+        }
 
-    # create final result dict 
-    print(extracted_feature)
-    final_result = {**extracted_feature, **extracted_date}
+        # create final result dict 
+        print(extracted_feature)
+        final_result = {**extracted_feature, **extracted_date}
 
-    agent_state.state['feature_parameters'] = final_result
-    filter_data = execute_sql_query(final_result, db_path, meta_data = meta_data)
-    agent_state.state['filter_data'] = filter_data
+        agent_state.state['feature_parameters'] = final_result
+        filter_data = execute_sql_query(final_result, db_path, meta_data = meta_data)
+        agent_state.state['filter_data'] = filter_data
 
-    table_creation, chart_creation, chart_config, accuracy_metrics, to_chop = forecast_using_prophet_utils(filter_data, final_result)
+        table_creation, chart_creation, chart_config, accuracy_metrics, to_chop = forecast_using_prophet_utils(filter_data, final_result)
 
-    try :
-        agent_state.state['table'] = table_creation.to_dict(orient="tight")
-        agent_state.state['data'] = chart_creation
-        agent_state.state['chart_config'] = chart_config 
-        agent_state.state['accuracy_metrics'] = accuracy_metrics 
+        try :
+            agent_state.state['table'] = table_creation.to_dict(orient="tight")
+            agent_state.state['data'] = chart_creation
+            agent_state.state['chart_config'] = chart_config 
+            agent_state.state['accuracy_metrics'] = accuracy_metrics 
+            agent_state.state['forecasted_period'] = to_chop 
 
-        print(table_creation.tail(int(to_chop)))
-        return table_creation.tail(int(to_chop)).to_markdown()
+            print(table_creation.tail(int(to_chop)))
+            return table_creation.tail(int(to_chop)).to_markdown()
+        except : 
+            return table_creation
     except : 
-        return table_creation
+        return "Unable to extract relevant information from the query. Try asking some different questions..."
