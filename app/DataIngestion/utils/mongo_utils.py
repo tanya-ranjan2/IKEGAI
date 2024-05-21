@@ -21,7 +21,7 @@ class MongoConnect:
             return True
         except:
             return False
-
+    '''
     def add_meta_data(self, idx, meta_data) : 
         # check if vectorDB exists as a key or not 
         try : 
@@ -79,7 +79,44 @@ class MongoConnect:
             return True 
         except : 
             return False 
+    '''
+    def add_meta_data(self, idx, meta_data,storage_name) :
+        record=self.collection.find_one({'id' : idx})
+        push2db={}
+        if "data_sources" not in record:
+            push2db["data_sources"]={}
+        else:
+            push2db["data_sources"]=record["data_sources"]
+            
+        if "vectorDB" not in record["data_sources"]:
+            push2db["data_sources"]["vectorDB"]=[]
+        else:
+            push2db["data_sources"]["vectorDB"]=record["data_sources"]["vectorDB"]
+            
+        if "meta_data" not in record["data_sources"]:
+            push2db["data_sources"]["meta_data"]=[]
+        else:
+            push2db["data_sources"]["meta_data"]=record["data_sources"]["meta_data"]
+            
 
+        push2db["data_sources"]["vectorDB"].append({"storage_name" : storage_name, "collection_name" : meta_data[0]["collection_name"]})
+        push2db["data_sources"]["meta_data"].append(meta_data[0])
+        try :
+            update_result = self.collection.update_one(
+                {'id' : idx}, 
+                {
+                    "$set" :push2db
+                }
+            )
+
+            print("modified count --> ", update_result.modified_count)
+
+            return True 
+        except : 
+            return False 
+            
+            
+        
     def get_meta_data(self, idx) : 
         return self.collection.find_one({'id' : idx})['data_sources']['meta_data']
     
