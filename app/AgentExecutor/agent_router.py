@@ -40,9 +40,8 @@ def execute_agent(agent_info:agent_schema.AgentExecute,req:Request):
     config_data=APIconnector.get_usecase_details(agent_info.uid,req.headers) 
     # config_data = test_data 
     print("CONFIG",config_data)
-    print(config_data["config_manager"]["llm_params"]["llm_name"])
-    MODEL_NAME = config_data["config_manager"]["llm_params"]["llm_name"]
-    MODEL_NAME=Model_Mapping[MODEL_NAME].lower()
+    
+    
     if 'is_direct_api' in config_data and 'api_url' in config_data:
         #print("API_URL",config_data['api_url'])
         if config_data['is_direct_api']:
@@ -51,6 +50,9 @@ def execute_agent(agent_info:agent_schema.AgentExecute,req:Request):
                 return res.json()
             else:
                 return {"status":404}
+            
+    MODEL_NAME = config_data["config_manager"]["llm_params"]["llm_name"]
+    MODEL_NAME=Model_Mapping[MODEL_NAME].lower()
     uuids=agent_info.session_id+agent_info.uid
     if uuids in session.sessions:
         agent=session.sessions[uuids]['obj']
@@ -146,7 +148,7 @@ def create_upload_file(file: list[UploadFile],idx:str,req:Request):
             "file_path":os.path.join(STORAGE_DRIVE,file.filename)
         })
         # print(all_tool_names)
-        if 'rag' in all_tool_names or 'Advanced_rag_tool' in all_tool_names:
+        if 'rag' in all_tool_names or 'advanced_rag' in all_tool_names:
             uploadpdf.delay(idx,os.path.join(STORAGE_DRIVE,file.filename),file.filename)
         
     return {"filename": [f.filename for f in files]}
