@@ -14,7 +14,7 @@ def get_usecase_details(uid,headers):
         return {"status":res.status_code}
     
     
-def send_eval(uid,user_id,query,responce,ground_truth,prompt_token,completion_token,model_name, evaluation_scores):
+def send_eval(uid,user_id,query,responce,ground_truth,prompt_token,completion_token,model_name, evaluation_scores,headers):
     data={
         "usecase_id": uid,
         "user_id": user_id,
@@ -26,8 +26,8 @@ def send_eval(uid,user_id,query,responce,ground_truth,prompt_token,completion_to
         "model_name": model_name,
         "evaluation_scores" :evaluation_scores
     }
-    print(data)
-    res=requests.post(config.SAVE_EVAL_METRICS,json=data)
+    headers = {"Authorization":headers.get("Authorization"),"contentType":"application/json"}
+    res=requests.post(config.SAVE_EVAL_METRICS,json=data,headers=headers)
     return {"status":res.status_code}
     
 

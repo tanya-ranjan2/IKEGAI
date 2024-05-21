@@ -106,7 +106,10 @@ def execute_agent(agent_info:agent_schema.AgentExecute,req:Request):
     }
     
     res = APIconnector.send_eval(agent_info.uid,user_id,agent_info.query,out,ground_truth,
-                               prompt_token,completion_token,MODEL_NAME, evaluation_scores)
+                               prompt_token,completion_token,MODEL_NAME, evaluation_scores,
+                               headers=req.headers
+                               
+                               )
     print("RESPONSE",res)
     
     #print({"output":out,"metadata":metadata,"followup":followup})
