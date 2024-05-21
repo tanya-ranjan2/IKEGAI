@@ -127,9 +127,10 @@ def execute(agent_info:agent_schema.AgentExecute):
 
 
 @router.post("/uploadfile/{idx}")
-def create_upload_file(file: list[UploadFile],idx:str):
+def create_upload_file(file: list[UploadFile],idx:str,req:Request):
+    
     files=[f for f in file]
-    config_data=APIconnector.get_usecase_details(idx)
+    config_data=APIconnector.get_usecase_details(idx,req.headers)
     
     all_tool_names=[]
     for a in config_data["config_manager"]["agents"]:
