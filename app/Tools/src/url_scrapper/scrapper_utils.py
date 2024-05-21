@@ -17,7 +17,7 @@ sys.modules['sqlite3']= sys.modules.pop('pysqlite3')
 '''
 
 def load_embeddings():
-    embeddings=HuggingFaceEmbeddings(EMBEDDING)
+    embeddings=HuggingFaceEmbeddings(model_name=EMBEDDING)
     return embeddings
     
 def load_vectordb(persist_directory,embeddings,topk=10,collection_name=None):
