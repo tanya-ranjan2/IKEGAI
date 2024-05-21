@@ -38,7 +38,7 @@ class CompartiveAnalysisAdvancedRag:
         prev_conv=self.convert_to_string(self.chat_history)
         data=advanced_retrival(self.llm,self.meta_store,query=query,embeddings=self.embeddings,chroma_client=self.client,prev_conv=prev_conv)
         context="\n\n".join([d.page_content for d in data])
-        print("advanced retrieval data --> ", context)
+        #print("advanced retrieval data --> ", context)
         out=self.rag_chain.invoke({
             "context":context,
             "user_query":query,
@@ -57,13 +57,8 @@ class CompartiveAnalysisAdvancedRag:
                 unique[key] = item
         info_list=list(unique.values())
         info_list=[{"page":m['page'],"path":m["path"].split("/")[-1]} for m in info_list]
-        template=f'Given the context \n{context} \n and Question: {query} \n Responce {out.content}. Give me 3 related questions on this'
-        followup_qa=self.llm.invoke(template)
+        
         return {
             "output":out.content,
-            "metadata":{
-                "sources":info_list,
-                
-            },
-            "followup":followup_qa.content.split('\n')
+            "sources":info_list,
         }

@@ -3,7 +3,7 @@ from langchain_community.vectorstores.chroma import Chroma
 
 
 from Tools.src.advanced_rag.utils.prompt_utils import get_meta_filtration,get_reranker
-from _temp.config import ChromaClient
+from _temp.config import ChromaClient,PERSISTANT_DRIVE
 from Tools.src.advanced_rag.utils.extraction_schema import RerankingSchema
 
 # retrieving docs from the vector store 
@@ -16,12 +16,12 @@ def advanced_retrival(llm,meta_store,query,embeddings,chroma_client,prev_conv):
     context=""
     documents=[]
     for c in all_collections:
-        cdb=Chroma(embedding_function=embeddings,persist_directory="TestRagv1",client=chroma_client,collection_name=c)
+        cdb=Chroma(embedding_function=embeddings,persist_directory=PERSISTANT_DRIVE,client=chroma_client,collection_name=c)
         searcher=cdb.as_retriever(search_kwargs={"k":4})
         docs_searched=searcher.invoke(query)
         exception_flag=False
         for docs_ in docs_searched:
-            ranking_out=reranking_chain.invoke({"context":docs_.page_content,"user_query":query,'schema':RerankingSchema.schema_json(),"chat_history":prev_conv})
+            ranking_out=reranking_chain.invoke({"context":docs_.page_content,"user_query":query,'schema':RerankingSchema.model_json_schema(),"chat_history":prev_conv})
             try:
                 ranking=json.loads(ranking_out.content)
             except:
