@@ -199,3 +199,4 @@ ultralyticsplus
 opencv-python
 datasets
 ragas
+langchain-groq

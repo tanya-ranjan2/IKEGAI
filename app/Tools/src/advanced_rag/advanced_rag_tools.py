@@ -8,7 +8,7 @@ from DataIngestion.utils import mongo_utils
 @tool(return_direct = True, args_schema=AdvanceRag) 
 def advanced_rag(user_query:str, **kwargs) -> str :
     """
-    Generate a competitive analysis of two documents based on the user query
+    Returns results from searching multiple documents in vector database
     """
     agent_state = kwargs['state']  
 

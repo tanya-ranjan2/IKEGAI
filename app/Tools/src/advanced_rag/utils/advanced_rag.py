@@ -4,7 +4,7 @@ from langchain_community.vectorstores.chroma import Chroma
 
 from Tools.src.advanced_rag.utils.prompt_utils import get_meta_filtration,get_reranker
 from _temp.config import ChromaClient
-from Tools.schema.advanced_rag_schema import RerankingSchema
+from Tools.src.advanced_rag.utils.extraction_schema import RerankingSchema
 
 # retrieving docs from the vector store 
 def advanced_retrival(llm,meta_store,query,embeddings,chroma_client,prev_conv):
