@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter,Request
 from AgentExecutor.schema import agent_schema
 from AgentExecutor.src import agents,crew
 from AgentExecutor.utils import helper,sessions
@@ -35,8 +35,9 @@ def get_agent_details(uid):
     return {"uid":uid}
 
 @router.post("/execute_agent/")
-def execute_agent(agent_info:agent_schema.AgentExecute):
-    config_data=APIconnector.get_usecase_details(agent_info.uid) 
+def execute_agent(agent_info:agent_schema.AgentExecute,req:Request):
+    
+    config_data=APIconnector.get_usecase_details(agent_info.uid,req.headers) 
     # config_data = test_data 
     print("CONFIG",config_data)
     print(config_data["config_manager"]["llm_params"]["llm_name"])

@@ -8,10 +8,12 @@ if ENV=="PROD":
     URI="20.41.249.147"
     API_GET_DETAILS_FULL="https://ikegai.southindia.cloudapp.azure.com/solution-manager/v1/useCase/usecase-by-id?id={uid}"
     API_GET_DETAILS_PARTIAL="https://ikegai.southindia.cloudapp.azure.com/solution-manager/v1/useCase/?id={uid}"
+    SAVE_EVAL_METRICS="https://ikegai.southindia.cloudapp.azure.com/solution-manager/evaluate/evaluate_LLM/"
 elif ENV=="DEV":
     URI="52.172.103.119"
     API_GET_DETAILS_FULL="https://ikegai-dev.southindia.cloudapp.azure.com/solution-manager/v1/useCase/usecase-by-id?id={uid}"
     API_GET_DETAILS_PARTIAL="https://ikegai-dev.southindia.cloudapp.azure.com/solution-manager/v1/useCase/?id={uid}"
+    SAVE_EVAL_METRICS="https://ikegai-dev.southindia.cloudapp.azure.com/solution-manager/evaluate/evaluate_LLM/"
 
 #################################
 PERSISTANT_DRIVE="VectorDB"

@@ -1,6 +1,8 @@
 import requests
 from _temp import config
-def get_usecase_details(uid):
+from fastapi import Request
+
+def get_usecase_details(uid,headers):
     res=requests.get(config.API_GET_DETAILS_FULL.format(uid=uid))
     if res.status_code==200:
         return res.json()['data']
