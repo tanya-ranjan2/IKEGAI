@@ -198,3 +198,4 @@ zipp==3.18.1 ; python_version >= "3.11" and python_version < "4.0"
 ultralyticsplus
 opencv-python
 datasets
+ragas
