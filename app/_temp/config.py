@@ -3,6 +3,10 @@ from dataclasses import dataclass,asdict
 ###################ENV-SET######################
 ENV="DEV"
 
+Model_Mapping={
+    "Azure OpenAI":"azureopenai",
+    "Llama":"llama-3"
+}
 # IF someone adds UAT just add UAT Env
 if ENV=="PROD":
     URI="20.41.249.147"

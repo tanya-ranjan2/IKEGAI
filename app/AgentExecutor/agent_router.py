@@ -14,7 +14,7 @@ import os
 from utils import parser,llmops,APIconnector
 from celery_queue import uploadpdf,uploadurl
 
-from _temp.config import STORAGE_DRIVE,UseCaseMongo
+from _temp.config import STORAGE_DRIVE,UseCaseMongo,Model_Mapping
 from DataIngestion.utils import pdf_utils,model_utils,mongo_utils
 
 from EvaluationMetrics.controllers.evaluate_llm import get_LLM_costing, get_scores, initialize_model
@@ -42,6 +42,7 @@ def execute_agent(agent_info:agent_schema.AgentExecute,req:Request):
     print("CONFIG",config_data)
     print(config_data["config_manager"]["llm_params"]["llm_name"])
     MODEL_NAME = config_data["config_manager"]["llm_params"]["llm_name"]
+    MODEL_NAME=Model_Mapping[MODEL_NAME].lower()
     if 'is_direct_api' in config_data and 'api_url' in config_data:
         #print("API_URL",config_data['api_url'])
         if config_data['is_direct_api']:
