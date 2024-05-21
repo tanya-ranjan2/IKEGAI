@@ -3,11 +3,12 @@ from _temp import config
 from fastapi import Request
 
 def get_usecase_details(uid,headers):
-    res=requests.get(config.API_GET_DETAILS_FULL.format(uid=uid))
+    headers = {"Authorization":headers.get("Authorization"),"contentType":"application/json"}
+    res=requests.get(config.API_GET_DETAILS_FULL.format(uid=uid),headers=headers)
     if res.status_code==200:
         return res.json()['data']
     elif res.status_code==500:
-        res=requests.get(config.API_GET_DETAILS_PARTIAL.format(uid=uid))
+        res=requests.get(config.API_GET_DETAILS_PARTIAL.format(uid=uid),headers=headers)
         return res.json()['data']
     else:
         return {"status":res.status_code}
@@ -26,7 +27,7 @@ def send_eval(uid,user_id,query,responce,ground_truth,prompt_token,completion_to
         "evaluation_scores" :evaluation_scores
     }
     print(data)
-    res=requests.post(f"https://ikegai.southindia.cloudapp.azure.com/solution-manager/evaluate/evaluate_LLM/",json=data)
+    res=requests.post(config.SAVE_EVAL_METRICS,json=data)
     return {"status":res.status_code}
     
 
