@@ -46,4 +46,4 @@ volumes:
     driver_opts:
       type: none
       o: bind
-      device: /home/ikegaidevuser/storage
+      device: ./storage
