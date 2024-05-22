@@ -39,20 +39,39 @@ class DocumentProcessor:
         self.block_info=[]
         
     def process(self,page_range:str=""):
-       
-        with open(self.pdf_path, "rb") as f:
-            if page_range!="":
-                poller = self.document_analysis_client.begin_analyze_document(
-                    "prebuilt-layout", document=f,pages=page_range)
-            else:
-                poller = self.document_analysis_client.begin_analyze_document(
-                    "prebuilt-layout", document=f)
-        result=poller.result()
-        tables=self.table_extraction(result)
-        #print(tables)
-        page_info=self.make_markdown(result,tables)
-            
-        return self.page_info
+        if len(self.docs)>100:
+            last_page_info={}
+            for i in range(1,len(self.docs),100):
+                end_page=i+99
+                p_range=f"{i}-{end_page}"
+                print(p_range)
+                with open(self.pdf_path, "rb") as f:
+                    
+                    poller = self.document_analysis_client.begin_analyze_document(
+                        "prebuilt-layout", document=f,pages=p_range)
+                    
+                result=poller.result()
+                tables=self.table_extraction(result)
+                #print(tables)
+                page_info=self.make_markdown(result,tables)
+                last_page_info.update(self.page_info)
+            self.page_info=last_page_info
+            return self.page_info
+                #return self.page_info
+        else:
+            with open(self.pdf_path, "rb") as f:
+                if page_range!="":
+                    poller = self.document_analysis_client.begin_analyze_document(
+                        "prebuilt-layout", document=f,pages=page_range)
+                else:
+                    poller = self.document_analysis_client.begin_analyze_document(
+                        "prebuilt-layout", document=f)
+            result=poller.result()
+            tables=self.table_extraction(result)
+            #print(tables)
+            page_info=self.make_markdown(result,tables)
+
+            return self.page_info
     def fill_cols(self,rows):
         max_len=max([len(v) for k,v in rows.items()])
         for row in rows:
@@ -108,7 +127,7 @@ class DocumentProcessor:
                     pass
                 else:
                     return True, t['table_name'],t['table'].fillna("").to_markdown(),{"x1":tab_x1,"y1":tab_y1,"x2":tab_x2,"y2":tab_y2}
-        return flag,None,None,None
+        return flag,_,_,_
     
     def make_markdown(self,result,table_data):
         info={}
