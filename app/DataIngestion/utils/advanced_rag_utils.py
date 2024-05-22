@@ -127,8 +127,7 @@ class DocumentProcessor:
                     pass
                 else:
                     return True, t['table_name'],t['table'].fillna("").to_markdown(),{"x1":tab_x1,"y1":tab_y1,"x2":tab_x2,"y2":tab_y2}
-        return flag,_,_,_
-    
+        return flag,None,None,None
     def make_markdown(self,result,table_data):
         info={}
         last_title=""
