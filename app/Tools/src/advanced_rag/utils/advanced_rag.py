@@ -41,7 +41,7 @@ def advanced_retrival(llm,meta_store,query,embeddings,chroma_client,prev_conv):
                 documents.append(docs_)
             else:
                 rating=ranking['rating']
-                if rating>2:
+                if rating>3:
                     page_infomation=docs_.page_content
                     page_infomation="## Metadata:"+json.dumps(docs_.metadata)+"  \n\n"+page_infomation
                     context+=page_infomation

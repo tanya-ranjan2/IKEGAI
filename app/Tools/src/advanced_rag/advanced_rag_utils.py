@@ -38,7 +38,7 @@ class CompartiveAnalysisAdvancedRag:
         prev_conv=self.convert_to_string(self.chat_history)
         data=advanced_retrival(self.llm,self.meta_store,query=query,embeddings=self.embeddings,chroma_client=self.client,prev_conv=prev_conv)
         context="\n\n".join([d.page_content for d in data])
-        #print("advanced retrieval data --> ", context)
+        print("advanced retrieval data --> ", context)
         out=self.rag_chain.invoke({
             "context":context,
             "user_query":query,
