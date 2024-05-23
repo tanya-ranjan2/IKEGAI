@@ -201,8 +201,8 @@ class Agent:
         Returns:
             Message: Output of the LLM Model
         """
-        if self.verbose:
-            print(chat_history.messages)
+        #if self.verbose:
+        #    print(chat_history.messages)
         out=self.chain.invoke(
                 {
                     "messages": chat_history.messages[-self.max_conv_history:],
