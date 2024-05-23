@@ -23,5 +23,5 @@ def advanced_rag(user_query:str, **kwargs) -> str :
     agent_state.state["context"]=result["context"]
     print("Results:",result)
     context=result["context"]
-    print("-------------->NUM TOKENS:",len(context.split()))
+    print("-------------->NUM TOKENS:",len(context.split()),len(context))
     return result["context"]
