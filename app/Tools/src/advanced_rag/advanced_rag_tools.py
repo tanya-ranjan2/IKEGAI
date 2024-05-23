@@ -29,4 +29,4 @@ def advanced_rag(user_query:str, **kwargs) -> str :
     encodded_data=encoding.encode(context)
     print("-------------->NUM TOKENS:",len(context.split()),len(encodded_data))
     print(context)
-    return result["context"][:50000]
+    return encoding.decode(encodded_data[:13000])
