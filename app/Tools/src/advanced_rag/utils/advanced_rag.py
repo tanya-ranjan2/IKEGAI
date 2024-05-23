@@ -20,6 +20,7 @@ def advanced_retrival(llm,meta_store,query,embeddings,chroma_client):
         searcher=cdb.as_retriever(search_kwargs={"k":4})
         docs_searched=searcher.invoke(query)
         exception_flag=False
+        ranking=None
         for docs_ in docs_searched:
             ranking_out=reranking_chain.invoke({"context":docs_.page_content,"user_query":query,'schema':RerankingSchema.model_json_schema()})
             try:

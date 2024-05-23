@@ -23,7 +23,7 @@ def advanced_rag(user_query:str, **kwargs) -> str :
     #agent_state.state["competitive_analysis_result"] = result
     agent_state.state['sources']=result['info_list']
     agent_state.state["context"]=result["context"]
-    print("Results:",result)
+    #print("Results:",result)
     context=result["context"]
     encoding = tiktoken.get_encoding("cl100k_base")
     encodded_data=encoding.encode(context)
