@@ -24,4 +24,4 @@ def advanced_rag(user_query:str, **kwargs) -> str :
     print("Results:",result)
     context=result["context"]
     print("-------------->NUM TOKENS:",len(context.split()),len(context))
-    return result["context"]
+    return result["context"][:50000]
