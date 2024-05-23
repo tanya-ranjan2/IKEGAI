@@ -40,9 +40,6 @@ reranking_template='''Relevance measures how well the Context addresses the main
             -------------
             {schema}
             
-            Previous Conversations
-            -------------
-            {chat_history}
             
             Context
             -------------
