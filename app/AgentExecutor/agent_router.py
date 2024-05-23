@@ -57,7 +57,7 @@ def execute_agent(agent_info:agent_schema.AgentExecute,req:Request):
     if uuids in session.sessions:
         agent=session.sessions[uuids]['obj']
         if session.sessions[uuids]['type']=='agent':
-            print("Running Agent...",agent.chat_history)
+            #print("Running Agent...",agent.chat_history)
             out,metadata,followup=agent._execute_agent(agent_info.query)
         else:
             out,metadata,followup=agent.run(agent_info.query)
@@ -112,7 +112,7 @@ def execute_agent(agent_info:agent_schema.AgentExecute,req:Request):
                                headers=req.headers
                                
                                )
-    print("RESPONSE",res)
+    #print("RESPONSE",res)
     
     #print({"output":out,"metadata":metadata,"followup":followup})
     return {"output":out,"metadata":metadata,"followup":followup}
