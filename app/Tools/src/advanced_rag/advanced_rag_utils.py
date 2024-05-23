@@ -11,7 +11,7 @@ from Tools.src.advanced_rag.utils.advanced_rag import advanced_retrival
 from Tools.src.advanced_rag.utils.prompt_utils import get_rag
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
-
+import tiktoken
 
 class Embeddings:
     def __init__(self,name) -> None:
@@ -37,19 +37,30 @@ class CompartiveAnalysisAdvancedRag:
     def predict(self,query):
         #prev_conv=self.convert_to_string(self.chat_history)
         data=advanced_retrival(self.llm,self.meta_store,query=query,embeddings=self.embeddings,chroma_client=self.client)
-        context="\n\n".join([d.page_content for d in data])
-        print("advanced retrieval data --> ", context)
-        '''
-        out=self.rag_chain.invoke({
-            "context":context,
-            "user_query":query,
-            "chat_history":prev_conv
-        })
-        self.chat_history.add_user_message(query)
-        self.chat_history.add_ai_message(out.content)
-        #Same code
-        '''
+        
         info_list=[d.metadata for d in data]
+        chunks={}
+        for info in data:
+            file_name=info.metadata['path']
+            if file_name in chunks:
+                chunks[file_name].append(info.page_content)
+            else:
+                chunks[file_name]=[info.page_content]
+        #context="\n\n".join([d.page_content for d in data])
+        #print("advanced retrieval data --> ", context)
+        chunks_of_rag=[]
+        for c in chunks:
+            context="\n".join(chunks[c])
+            out=self.rag_chain.invoke({
+                "context":f"# Content from document {c}  \n {context}",
+                "user_query":query,
+            })
+            chunks_of_rag.append(out.content)
+        #self.chat_history.add_user_message(query)
+        #self.chat_history.add_ai_message(out.content)
+        #Same code
+        
+        #info_list=[d.metadata for d in data]
         unique = dict()
         for item in info_list:
             # concatenate key
@@ -60,7 +71,7 @@ class CompartiveAnalysisAdvancedRag:
         info_list=list(unique.values())
         info_list=[{"page":m['page'],"path":m["path"].split("/")[-1]} for m in info_list]
         return {
-            "context":context,
+            "context":"\n\n".join(chunks_of_rag),
             "documents":data,
             "info_list":info_list
         }
