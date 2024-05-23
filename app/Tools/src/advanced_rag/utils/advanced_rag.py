@@ -15,6 +15,7 @@ def advanced_retrival(llm,meta_store,query,embeddings,chroma_client):
     print("filtered meta data --> ", meta_filters)
     context=""
     documents=[]
+    print("CHROMA-----------------> FETCH")
     for c in all_collections:
         cdb=Chroma(embedding_function=embeddings,persist_directory=PERSISTANT_DRIVE,client=chroma_client,collection_name=c)
         searcher=cdb.as_retriever(search_kwargs={"k":4})

@@ -28,4 +28,5 @@ def advanced_rag(user_query:str, **kwargs) -> str :
     encoding = tiktoken.get_encoding("cl100k_base")
     encodded_data=encoding.encode(context)
     print("-------------->NUM TOKENS:",len(context.split()),len(encodded_data))
+    print(context)
     return result["context"][:50000]

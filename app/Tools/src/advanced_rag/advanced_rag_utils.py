@@ -46,16 +46,16 @@ class CompartiveAnalysisAdvancedRag:
                 chunks[file_name].append(info.page_content)
             else:
                 chunks[file_name]=[info.page_content]
-        #context="\n\n".join([d.page_content for d in data])
+        context="\n\n".join([d.page_content for d in data])
         #print("advanced retrieval data --> ", context)
-        chunks_of_rag=[]
-        for c in chunks:
-            context="\n".join(chunks[c])
-            out=self.rag_chain.invoke({
-                "context":f"# Content from document {c}  \n {context}",
-                "user_query":query,
-            })
-            chunks_of_rag.append(out.content)
+        #chunks_of_rag=[]
+        #for c in chunks:
+        #    context="\n".join(chunks[c])
+        #    out=self.rag_chain.invoke({
+        #        "context":f"# Content from document {c}  \n {context}",
+        #        "user_query":query,
+        #    })
+        #    chunks_of_rag.append(out.content)
         #self.chat_history.add_user_message(query)
         #self.chat_history.add_ai_message(out.content)
         #Same code
@@ -71,7 +71,8 @@ class CompartiveAnalysisAdvancedRag:
         info_list=list(unique.values())
         info_list=[{"page":m['page'],"path":m["path"].split("/")[-1]} for m in info_list]
         return {
-            "context":"\n\n".join(chunks_of_rag),
+            #"context":"\n\n".join(chunks_of_rag),
+            "context":context,
             "documents":data,
             "info_list":info_list
         }
