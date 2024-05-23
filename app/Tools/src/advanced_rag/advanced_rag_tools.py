@@ -18,7 +18,8 @@ def advanced_rag(user_query:str, **kwargs) -> str :
     obj = CompartiveAnalysisAdvancedRag(meta_data)
     result = obj.predict(user_query)
 
-    agent_state.state["competitive_analysis_result"] = result
-    agent_state.state['sources']=result['sources']
+    #agent_state.state["competitive_analysis_result"] = result
+    agent_state.state['sources']=result['info_list']
+    agent_state.state["context"]=result["context"]
     print("Results:",result)
-    return result["output"]
+    return result["context"]
