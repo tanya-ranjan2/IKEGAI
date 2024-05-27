@@ -18,6 +18,6 @@ def advanced_rag_ensemble(user_query:str, **kwargs) -> str :
     
     agent_state.state['sources']=result['info_list']
     agent_state.state["context"]=result["context"]
-    #print("Results:",result)
+    print("Results:",result)
     context=result["context"]
     return context
