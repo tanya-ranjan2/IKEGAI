@@ -4,6 +4,7 @@ from AgentExecutor.src import agents,crew
 from AgentExecutor.utils import helper,sessions
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import BackgroundTasks
 
 from fastapi.responses import FileResponse
 import requests
@@ -17,7 +18,7 @@ from celery_queue import uploadpdf,uploadurl
 from _temp.config import STORAGE_DRIVE,UseCaseMongo,Model_Mapping
 from DataIngestion.utils import pdf_utils,model_utils,mongo_utils
 
-from EvaluationMetrics.controllers.evaluate_llm import get_LLM_costing, get_scores, initialize_model
+from EvaluationMetrics.controllers.evaluate_llm import store_evaluation
 
 #<CODEBLOCk>
 router=APIRouter(prefix='/agent',tags=["agent_execution"])
@@ -35,7 +36,7 @@ def get_agent_details(uid):
     return {"uid":uid}
 
 @router.post("/execute_agent/")
-def execute_agent(agent_info:agent_schema.AgentExecute,req:Request):
+def execute_agent(agent_info:agent_schema.AgentExecute, background_tasks: BackgroundTasks, req:Request):
     
     config_data=APIconnector.get_usecase_details(agent_info.uid,req.headers) 
     # config_data = test_data 
@@ -81,39 +82,8 @@ def execute_agent(agent_info:agent_schema.AgentExecute,req:Request):
                 "obj":agent_crew
             }
             out,metadata,followup=agent_crew.run(agent_info.query)
-            
-    #Evaluation
-    prompt_token=metadata["Tokens"]["prompt_tokens"]
-    completion_token=metadata["Tokens"]["completion_tokens"]
-    user_id=""
-    ground_truth= None
-    if 'context' in metadata:
-        context = [metadata['context']]
-        retrieval_context = metadata['context']
-    else:
-        context = None  
-        retrieval_context = None
-         
-    custom_model = llmops.llmbuilder(MODEL_NAME)
-    #custom_model = initialize_model(llm_evaluate.model_name)
-    status, scores, definitions, message_for_scores = get_scores(custom_model, agent_info.query, 
-                            out, ground_truth, retrieval_context, context)
     
-    cost, status, message_for_cost = get_LLM_costing(prompt_token, completion_token, MODEL_NAME)
-    
-    evaluation_scores = {
-        "message": {"message_for_scores": message_for_scores, "message_for_cost": message_for_cost},
-        "status": status,
-        "data": {"scores": scores, "cost": cost, 
-                    "definitions" : definitions, "model_name" : MODEL_NAME},
-    }
-    
-    res = APIconnector.send_eval(agent_info.uid,user_id,agent_info.query,out,ground_truth,
-                               prompt_token,completion_token,MODEL_NAME, evaluation_scores,
-                               headers=req.headers
-                               
-                               )
-    #print("RESPONSE",res)
+    background_tasks.add_task(store_evaluation, metadata, MODEL_NAME, agent_info, out)
     
     #print({"output":out,"metadata":metadata,"followup":followup})
     return {"output":out,"metadata":metadata,"followup":followup}

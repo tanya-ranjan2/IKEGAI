@@ -6,6 +6,7 @@ import json
 from ragas import evaluate
 from ragas.metrics import faithfulness, context_recall, context_precision
 from ..metric_info import MetricsInfo
+from utils import llmops,APIconnector
 
 class ModelEvaluationMetrics:
     def __init__(self, custom_model, input_prompt, actual_output, 
@@ -230,3 +231,30 @@ def get_LLM_costing(prompt_token, completion_token, model_name):
         message = "Something went wrong! Exception : " + str(e)
 
     return cost, status, message
+
+
+def store_evaluation(metadata, MODEL_NAME, agent_info, out):
+    #Evaluation
+    prompt_token=metadata["Tokens"]["prompt_tokens"]
+    completion_token=metadata["Tokens"]["completion_tokens"]
+    user_id=""
+    ground_truth= None
+    if 'context' in metadata:
+        context = [metadata['context']]
+        retrieval_context = metadata['context']
+    else:
+        context = None  
+        retrieval_context = None
+         
+    custom_model = llmops.llmbuilder(MODEL_NAME)
+    #custom_model = initialize_model(llm_evaluate.model_name)
+    status, scores, definitions, message_for_scores = get_scores(custom_model, agent_info.query, 
+                            out, ground_truth, retrieval_context, context)
+    
+    cost, status, message_for_cost = get_LLM_costing(prompt_token, completion_token, MODEL_NAME)
+    
+    res = APIconnector.send_eval(agent_info.uid,user_id,agent_info.query,out,ground_truth,
+                               prompt_token,completion_token,MODEL_NAME, 
+                               message_for_scores, message_for_cost, scores, cost, definitions)
+    
+    print("Stored evaluation metrics : ",res)
