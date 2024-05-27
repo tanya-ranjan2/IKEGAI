@@ -11,7 +11,12 @@ from Tools.src.advanced_rag.advanced_rag_tools import advanced_rag
 from Tools.src.adv_ensemble_rag.adv_ensemble_rag_tools import advanced_rag_ensemble
 from utils.llmops import llmbuilder
 
-def create_agents(config):
+from _temp.config import Model_Mapping
+def get_llm_details(config):
+    if 'llm_params' not in config:
+        raise Exception("LLM params not Updated !!!")
+    return Model_Mapping[config["llm_params"]['llm_name']]
+def create_agents(config,llm):
     """Create the Agents frrom configation
 
     Args:
@@ -21,7 +26,7 @@ def create_agents(config):
         list: returns list of Agents
     """
     agent_details=parser.get_agent_details(config)
-    llm=llmbuilder("azureopenai")
+    #llm=llmbuilder(get_llm_details(config))
     all_agents=[]
     for agent_detail in agent_details:
         out_prompt=None

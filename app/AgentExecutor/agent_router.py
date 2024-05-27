@@ -50,7 +50,8 @@ def execute_agent(agent_info:agent_schema.AgentExecute,req:Request):
                 return res.json()
             else:
                 return {"status":404}
-            
+    if "status" in config_data and config_data["status"]==401:
+        return config_data
     MODEL_NAME = config_data["config_manager"]["llm_params"]["llm_name"]
     MODEL_NAME=Model_Mapping[MODEL_NAME].lower()
     uuids=agent_info.session_id+agent_info.uid
@@ -64,7 +65,7 @@ def execute_agent(agent_info:agent_schema.AgentExecute,req:Request):
     else:
         print("---------Builder--------")
         llm=llmops.llmbuilder(MODEL_NAME)
-        agents=helper.create_agents(config_data)
+        agents=helper.create_agents(config_data,llm)
         if len(agents)==1:
             agent=agents[0]
             session.sessions[uuids]={
