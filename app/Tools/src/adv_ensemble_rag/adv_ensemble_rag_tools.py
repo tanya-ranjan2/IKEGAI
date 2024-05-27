@@ -13,7 +13,7 @@ def advanced_rag_ensemble(user_query:str, **kwargs) -> str :
     agent_state = kwargs['state']  
 
     # retrieve meta data  
-    meta_data = agent_state.config['data_sources']['meta_data']
+    meta_data = agent_state.config['data_sources']
     result=advance_retrival(user_query,meta_data)
     
     agent_state.state['sources']=result['info_list']
