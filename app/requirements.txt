@@ -200,3 +200,5 @@ opencv-python
 datasets
 ragas
 langchain-groq
+FlagEmbedding
+rank_bm25

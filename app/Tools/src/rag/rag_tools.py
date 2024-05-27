@@ -7,6 +7,7 @@ from Tools.src import tool_utils
 from Tools.schema.rag_schema import KGTool,RagTool
 from Tools.src.rag import rag_utils
 from utils.llmops import llmbuilder
+from Tools.utils import model_helper
 
 
 
@@ -16,7 +17,7 @@ def rag(query:str,topk:int=3,**kwargs)->list:
     """Returns results from searching documents in vector database"""
     agent_state=kwargs['state']
     data_sourse=agent_state.config['data_sources']
-    embeddings=rag_utils.load_embeddings()
+    embeddings=model_helper.load_embeddings()
     all_docs=[]
     all_refs=[]
     for d in data_sourse["vectorDB"]:

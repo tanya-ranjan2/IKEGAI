@@ -22,6 +22,10 @@ elif ENV=="DEV":
 #################################
 PERSISTANT_DRIVE="VectorDB"
 STORAGE_DRIVE="Files"
+RERANKER_MODEL='BAAI/bge-reranker-base'
+MAX_TOKEN_CONTEXT_LIMIT=7000
+
+
 if ENV=="PROD":
     EMBEDDING="intfloat/e5-base-v2"
 elif ENV=="DEV":

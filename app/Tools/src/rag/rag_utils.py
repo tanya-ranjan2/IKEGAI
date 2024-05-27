@@ -13,11 +13,11 @@ sys.modules['sqlite3']= sys.modules.pop('pysqlite3')
 import chromadb
 from chromadb.config import Settings
 
-
+'''
 def load_embeddings():
     embeddings=HuggingFaceEmbeddings(model_name=EMBEDDING)
     return embeddings
-
+'''
 def load_vectordb(persist_directory,embeddings,topk=2,collection_name=None):
     client = chromadb.HttpClient(**asdict(ChromaClient()))
     if collection_name==None or collection_name=="":

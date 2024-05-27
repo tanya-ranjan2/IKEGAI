@@ -10,7 +10,7 @@ services:
     build: .
     command: uvicorn main:app --host 0.0.0.0 --port 6069
     volumes:
-      - demo-volume:/app
+      - demo-volume-2:/app
     ports:
       - 6069:6069
     restart: always
@@ -19,13 +19,13 @@ services:
     build: .
     command: celery --app celery_queue worker --loglevel=debug --pool=solo -E --logfile=logs/celery_main.log
     volumes:
-      - demo-volume:/app
+      - demo-volume-2:/app
     restart: always
     depends_on:
       - app
       - redis
 volumes:
- demo-volume:
+ demo-volume-2:
    #external: true
     driver: local
     driver_opts:

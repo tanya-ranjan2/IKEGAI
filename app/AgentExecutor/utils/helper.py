@@ -8,6 +8,7 @@ from Tools.src.community_tools.com_tool import DuckDuckGo, WikiPedia,YouTubeSear
 from Tools.src.extractor.extractor_tools import extract_keywords
 from Tools.src.url_scrapper.scrapper_tool import scrapper
 from Tools.src.advanced_rag.advanced_rag_tools import advanced_rag
+from Tools.src.adv_ensemble_rag.adv_ensemble_rag_tools import advanced_rag_ensemble
 from utils.llmops import llmbuilder
 
 def create_agents(config):
